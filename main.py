@@ -7,7 +7,7 @@ from fastapi import FastAPI, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from sqlalchemy import func, text
+from sqlalchemy import func, text, case
 
 from database import engine, get_db, Base
 from models import CallRecord
@@ -77,69 +77,71 @@ async def receive_call(payload: CallRecordCreate, db: Session = Depends(get_db))
 
 @app.get("/api/analytics")
 async def get_analytics(db: Session = Depends(get_db)):
-    total_calls = db.query(func.count(CallRecord.id)).scalar() or 0
+    # ── 1 query: all summary stats in one pass ────────────────────────────────
+    s = db.query(
+        func.count(CallRecord.id).label("total_calls"),
+        func.count(case((CallRecord.call_human == True, 1))).label("human_needed"),
+        func.avg(CallRecord.attempt).label("avg_attempts"),
+        func.avg(CallRecord.duration).label("avg_duration"),
+        func.sum(CallRecord.duration + 120).label("total_seconds_saved"),
+    ).one()
 
-    human_needed = db.query(
-        func.count(CallRecord.id)
-    ).filter(CallRecord.call_human == True).scalar() or 0
+    total_calls       = s.total_calls or 0
+    human_needed      = s.human_needed or 0
+    avg_attempts      = round(float(s.avg_attempts), 2) if s.avg_attempts else 0.0
+    avg_duration      = round(float(s.avg_duration), 1) if s.avg_duration else 0.0
+    total_hours_saved = round(float(s.total_seconds_saved or 0) / 3600, 1)
+    handoff_rate      = round((human_needed / total_calls * 100) if total_calls > 0 else 0.0, 1)
 
-    avg_attempts_raw = db.query(func.avg(CallRecord.attempt)).scalar()
-    avg_attempts = round(float(avg_attempts_raw), 2) if avg_attempts_raw else 0.0
+    # ── 2 query: status distribution ─────────────────────────────────────────
+    status_dist = {
+        row.status: row.count
+        for row in db.query(
+            CallRecord.status,
+            func.count(CallRecord.id).label("count")
+        ).group_by(CallRecord.status).all()
+    }
 
-    avg_duration_raw = db.query(func.avg(CallRecord.duration)).scalar()
-    avg_duration = round(float(avg_duration_raw), 1) if avg_duration_raw else 0.0
+    # ── 3 query: sentiment distribution ──────────────────────────────────────
+    sentiment_dist = {
+        row.sentiment: row.count
+        for row in db.query(
+            CallRecord.sentiment,
+            func.count(CallRecord.id).label("count")
+        ).group_by(CallRecord.sentiment).all()
+    }
 
-    # 2 min (120s) setup time saved + actual call duration, per call
-    total_seconds_saved_raw = db.query(func.sum(CallRecord.duration + 120)).scalar() or 0
-    total_hours_saved = round(float(total_seconds_saved_raw) / 3600, 1)
-
-    status_rows = db.query(
-        CallRecord.status,
-        func.count(CallRecord.id).label("count")
-    ).group_by(CallRecord.status).all()
-    status_dist = {row.status: row.count for row in status_rows}
-
-    sentiment_rows = db.query(
-        CallRecord.sentiment,
-        func.count(CallRecord.id).label("count")
-    ).group_by(CallRecord.sentiment).all()
-    sentiment_dist = {row.sentiment: row.count for row in sentiment_rows}
-
+    # ── 4 query: calls + avg duration per day (combined) ─────────────────────
     thirty_days_ago = datetime.utcnow() - timedelta(days=30)
     time_rows = db.query(
         func.date_trunc("day", CallRecord.created_at).label("day"),
-        func.count(CallRecord.id).label("count")
+        func.count(CallRecord.id).label("count"),
+        func.avg(CallRecord.duration).label("avg_duration"),
     ).filter(
         CallRecord.created_at >= thirty_days_ago
     ).group_by("day").order_by("day").all()
+
     calls_over_time = [
         {"date": row.day.strftime("%Y-%m-%d"), "count": row.count}
         for row in time_rows
     ]
-
-    duration_rows = db.query(
-        func.date_trunc("day", CallRecord.created_at).label("day"),
-        func.avg(CallRecord.duration).label("avg_duration")
-    ).filter(
-        CallRecord.created_at >= thirty_days_ago
-    ).group_by("day").order_by("day").all()
     duration_over_time = [
         {"date": row.day.strftime("%Y-%m-%d"), "avg_duration": round(float(row.avg_duration), 1)}
-        for row in duration_rows
+        for row in time_rows
     ]
 
-    phone_rows = db.query(
-        CallRecord.phone,
-        func.count(CallRecord.id).label("count")
-    ).group_by(CallRecord.phone).order_by(
-        func.count(CallRecord.id).desc()
-    ).limit(10).all()
-    top_phones = [{"phone": row.phone, "count": row.count} for row in phone_rows]
+    # ── 5 query: top 10 phones ────────────────────────────────────────────────
+    top_phones = [
+        {"phone": row.phone, "count": row.count}
+        for row in db.query(
+            CallRecord.phone,
+            func.count(CallRecord.id).label("count")
+        ).group_by(CallRecord.phone).order_by(
+            func.count(CallRecord.id).desc()
+        ).limit(10).all()
+    ]
 
-    handoff_rate = round(
-        (human_needed / total_calls * 100) if total_calls > 0 else 0.0, 1
-    )
-
+    # ── 6 query: attempts distribution + recent calls (combined fetch) ────────
     attempt_rows = db.query(
         CallRecord.attempt,
         func.count(CallRecord.id).label("count")

@@ -564,57 +564,55 @@
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const d = await res.json();
 
-                // Summary cards
-                document.getElementById('card-total').textContent        = d.summary.total_calls.toLocaleString();
-                document.getElementById('card-human').textContent        = d.summary.human_needed.toLocaleString();
+                // ── KPI cards: paint immediately (no chart work) ──────────────
+                document.getElementById('card-total').textContent         = d.summary.total_calls.toLocaleString();
+                document.getElementById('card-human').textContent         = d.summary.human_needed.toLocaleString();
                 document.getElementById('card-avg-attempts').textContent  = d.summary.avg_attempts;
                 document.getElementById('card-avg-duration').textContent  = d.summary.avg_duration;
                 document.getElementById('card-hours-saved').textContent   = d.summary.total_hours_saved + 'h';
                 document.getElementById('card-handoff').textContent       = d.summary.handoff_rate + '%';
-
-                // Handoff rate big display + bar
-                document.getElementById('handoff-big').textContent = d.summary.handoff_rate + '%';
-                document.getElementById('handoff-bar').style.width  = Math.min(d.summary.handoff_rate, 100) + '%';
-
-                if (!chartsInitialised) {
-                    // First load: create charts
-                    initStatusChart(d.status_distribution);
-                    initSentimentChart(d.sentiment_distribution);
-                    initTimeChart(d.calls_over_time);
-                    initPhonesChart(d.top_phones);
-                    initAttemptsChart(d.attempts_distribution);
-                    initDurationTimeChart(d.duration_over_time);
-                    chartsInitialised = true;
-                } else {
-                    // Subsequent refreshes: update in-place
-                    updateDonut(statusChart,
-                        Object.keys(d.status_distribution).map(capitalise),
-                        Object.values(d.status_distribution),
-                        Object.keys(d.status_distribution).map(k => STATUS_COLORS[k.toLowerCase()] || '#888888'));
-                    updateDonut(sentimentChart,
-                        Object.keys(d.sentiment_distribution).map(capitalise),
-                        Object.values(d.sentiment_distribution),
-                        Object.keys(d.sentiment_distribution).map(k => SENTIMENT_COLORS[k.toLowerCase()] || '#888888'));
-
-                    timeChart.data.labels = d.calls_over_time.map(r => r.date);
-                    timeChart.data.datasets[0].data = d.calls_over_time.map(r => r.count);
-                    timeChart.update('active');
-
-                    phonesChart.data.labels = d.top_phones.map(r => r.phone);
-                    phonesChart.data.datasets[0].data = d.top_phones.map(r => r.count);
-                    phonesChart.update('active');
-
-                    attemptsChart.data.labels = Object.keys(d.attempts_distribution).map(k => `Attempt ${k}`);
-                    attemptsChart.data.datasets[0].data = Object.values(d.attempts_distribution);
-                    attemptsChart.update('active');
-
-                    durationTimeChart.data.labels = d.duration_over_time.map(r => r.date);
-                    durationTimeChart.data.datasets[0].data = d.duration_over_time.map(r => r.avg_duration);
-                    durationTimeChart.update('active');
-                }
-
-                renderTable(d.recent_calls);
+                document.getElementById('handoff-big').textContent        = d.summary.handoff_rate + '%';
+                document.getElementById('handoff-bar').style.width        = Math.min(d.summary.handoff_rate, 100) + '%';
                 updateLastRefreshed();
+
+                // ── Charts + table: defer so cards render first ───────────────
+                requestAnimationFrame(() => {
+                    if (!chartsInitialised) {
+                        initStatusChart(d.status_distribution);
+                        initSentimentChart(d.sentiment_distribution);
+                        initTimeChart(d.calls_over_time);
+                        initPhonesChart(d.top_phones);
+                        initAttemptsChart(d.attempts_distribution);
+                        initDurationTimeChart(d.duration_over_time);
+                        chartsInitialised = true;
+                    } else {
+                        updateDonut(statusChart,
+                            Object.keys(d.status_distribution).map(capitalise),
+                            Object.values(d.status_distribution),
+                            Object.keys(d.status_distribution).map(k => STATUS_COLORS[k.toLowerCase()] || '#888888'));
+                        updateDonut(sentimentChart,
+                            Object.keys(d.sentiment_distribution).map(capitalise),
+                            Object.values(d.sentiment_distribution),
+                            Object.keys(d.sentiment_distribution).map(k => SENTIMENT_COLORS[k.toLowerCase()] || '#888888'));
+
+                        timeChart.data.labels = d.calls_over_time.map(r => r.date);
+                        timeChart.data.datasets[0].data = d.calls_over_time.map(r => r.count);
+                        timeChart.update('none');
+
+                        phonesChart.data.labels = d.top_phones.map(r => r.phone);
+                        phonesChart.data.datasets[0].data = d.top_phones.map(r => r.count);
+                        phonesChart.update('none');
+
+                        attemptsChart.data.labels = Object.keys(d.attempts_distribution).map(k => `Attempt ${k}`);
+                        attemptsChart.data.datasets[0].data = Object.values(d.attempts_distribution);
+                        attemptsChart.update('none');
+
+                        durationTimeChart.data.labels = d.duration_over_time.map(r => r.date);
+                        durationTimeChart.data.datasets[0].data = d.duration_over_time.map(r => r.avg_duration);
+                        durationTimeChart.update('none');
+                    }
+                    renderTable(d.recent_calls);
+                });
 
             } catch (err) {
                 console.error('Failed to load analytics:', err);
