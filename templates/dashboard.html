@@ -287,6 +287,9 @@
         // ── Chart.js global defaults ──────────────────────────────────────────
         Chart.defaults.font.family = "'Inter', 'Arial', sans-serif";
         Chart.defaults.color = '#6B7280';
+        Chart.defaults.animation = false;      // render instantly, no slide-in delay
+        Chart.defaults.responsive = true;
+        Chart.defaults.maintainAspectRatio = false;
 
         // One colour per call status (matches CSS badges)
         const STATUS_COLORS = {
@@ -575,8 +578,8 @@
                 document.getElementById('handoff-bar').style.width        = Math.min(d.summary.handoff_rate, 100) + '%';
                 updateLastRefreshed();
 
-                // ── Charts + table: defer so cards render first ───────────────
-                requestAnimationFrame(() => {
+                // ── Charts + table ────────────────────────────────────────────
+                try {
                     if (!chartsInitialised) {
                         initStatusChart(d.status_distribution);
                         initSentimentChart(d.sentiment_distribution);
@@ -597,22 +600,24 @@
 
                         timeChart.data.labels = d.calls_over_time.map(r => r.date);
                         timeChart.data.datasets[0].data = d.calls_over_time.map(r => r.count);
-                        timeChart.update('none');
+                        timeChart.update();
 
                         phonesChart.data.labels = d.top_phones.map(r => r.phone);
                         phonesChart.data.datasets[0].data = d.top_phones.map(r => r.count);
-                        phonesChart.update('none');
+                        phonesChart.update();
 
                         attemptsChart.data.labels = Object.keys(d.attempts_distribution).map(k => `Attempt ${k}`);
                         attemptsChart.data.datasets[0].data = Object.values(d.attempts_distribution);
-                        attemptsChart.update('none');
+                        attemptsChart.update();
 
                         durationTimeChart.data.labels = d.duration_over_time.map(r => r.date);
                         durationTimeChart.data.datasets[0].data = d.duration_over_time.map(r => r.avg_duration);
-                        durationTimeChart.update('none');
+                        durationTimeChart.update();
                     }
-                    renderTable(d.recent_calls);
-                });
+                } catch (chartErr) {
+                    console.error('Chart render error:', chartErr);
+                }
+                renderTable(d.recent_calls);
 
             } catch (err) {
                 console.error('Failed to load analytics:', err);
