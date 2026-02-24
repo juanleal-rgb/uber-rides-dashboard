@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uber Rides — Call Analytics Dashboard</title>
+    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -127,7 +128,7 @@
     <main class="max-w-screen-2xl mx-auto px-6 py-8 space-y-8">
 
         <!-- ===== SUMMARY CARDS ===== -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
 
             <div class="card-uber stat-card p-5">
                 <div class="flex items-center justify-between mb-3">
@@ -137,16 +138,6 @@
                     </div>
                 </div>
                 <p id="card-total" class="text-3xl font-black text-black">—</p>
-            </div>
-
-            <div class="card-uber stat-card p-5">
-                <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Unique Numbers</span>
-                    <div class="w-8 h-8 rounded-lg bg-neon-blue flex items-center justify-center">
-                        <i data-lucide="users" class="w-4 h-4 text-white"></i>
-                    </div>
-                </div>
-                <p id="card-unique" class="text-3xl font-black text-black">—</p>
             </div>
 
             <div class="card-uber stat-card p-5">
@@ -180,14 +171,15 @@
                 <p class="text-xs text-gray-400 mt-1">seconds</p>
             </div>
 
-            <div class="card-uber stat-card p-5">
+            <div class="card-uber stat-card p-5" style="border-left: 3px solid #00B35E;">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Handoff Rate</span>
-                    <div class="w-8 h-8 rounded-lg bg-neon-orange flex items-center justify-center">
-                        <i data-lucide="arrow-right-circle" class="w-4 h-4 text-white"></i>
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Hours Saved</span>
+                    <div class="w-8 h-8 rounded-lg bg-neon-green flex items-center justify-center">
+                        <i data-lucide="clock" class="w-4 h-4 text-white"></i>
                     </div>
                 </div>
-                <p id="card-handoff" class="text-3xl font-black text-black">—</p>
+                <p id="card-hours-saved" class="text-3xl font-black text-black">—</p>
+                <p class="text-xs text-gray-400 mt-1">call + 2 min setup per call</p>
             </div>
 
         </div>
@@ -573,11 +565,11 @@
                 const d = await res.json();
 
                 // Summary cards
-                document.getElementById('card-total').textContent       = d.summary.total_calls.toLocaleString();
-                document.getElementById('card-unique').textContent      = d.summary.unique_phones.toLocaleString();
-                document.getElementById('card-human').textContent       = d.summary.human_needed.toLocaleString();
+                document.getElementById('card-total').textContent        = d.summary.total_calls.toLocaleString();
+                document.getElementById('card-human').textContent        = d.summary.human_needed.toLocaleString();
                 document.getElementById('card-avg-attempts').textContent  = d.summary.avg_attempts;
                 document.getElementById('card-avg-duration').textContent  = d.summary.avg_duration;
+                document.getElementById('card-hours-saved').textContent   = d.summary.total_hours_saved + 'h';
                 document.getElementById('card-handoff').textContent       = d.summary.handoff_rate + '%';
 
                 // Handoff rate big display + bar

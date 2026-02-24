@@ -79,10 +79,6 @@ async def receive_call(payload: CallRecordCreate, db: Session = Depends(get_db))
 async def get_analytics(db: Session = Depends(get_db)):
     total_calls = db.query(func.count(CallRecord.id)).scalar() or 0
 
-    unique_phones = db.query(
-        func.count(func.distinct(CallRecord.phone))
-    ).scalar() or 0
-
     human_needed = db.query(
         func.count(CallRecord.id)
     ).filter(CallRecord.call_human == True).scalar() or 0
@@ -92,6 +88,10 @@ async def get_analytics(db: Session = Depends(get_db)):
 
     avg_duration_raw = db.query(func.avg(CallRecord.duration)).scalar()
     avg_duration = round(float(avg_duration_raw), 1) if avg_duration_raw else 0.0
+
+    # 2 min (120s) setup time saved + actual call duration, per call
+    total_seconds_saved_raw = db.query(func.sum(CallRecord.duration + 120)).scalar() or 0
+    total_hours_saved = round(float(total_seconds_saved_raw) / 3600, 1)
 
     status_rows = db.query(
         CallRecord.status,
@@ -166,12 +166,12 @@ async def get_analytics(db: Session = Depends(get_db)):
 
     return {
         "summary": {
-            "total_calls":   total_calls,
-            "unique_phones": unique_phones,
-            "human_needed":  human_needed,
-            "avg_attempts":  avg_attempts,
-            "avg_duration":  avg_duration,
-            "handoff_rate":  handoff_rate,
+            "total_calls":        total_calls,
+            "human_needed":       human_needed,
+            "avg_attempts":       avg_attempts,
+            "avg_duration":       avg_duration,
+            "handoff_rate":       handoff_rate,
+            "total_hours_saved":  total_hours_saved,
         },
         "status_distribution":    status_dist,
         "sentiment_distribution": sentiment_dist,
