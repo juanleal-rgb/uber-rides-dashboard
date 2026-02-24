@@ -58,6 +58,7 @@ async def receive_call(payload: CallRecordCreate, db: Session = Depends(get_db))
         call_human = payload.call_human,
         summary    = payload.summary,
         attempt    = payload.attempt,
+        duration   = payload.duration,
     )
     db.add(record)
     db.commit()
@@ -83,6 +84,9 @@ async def get_analytics(db: Session = Depends(get_db)):
 
     avg_attempts_raw = db.query(func.avg(CallRecord.attempt)).scalar()
     avg_attempts = round(float(avg_attempts_raw), 2) if avg_attempts_raw else 0.0
+
+    avg_duration_raw = db.query(func.avg(CallRecord.duration)).scalar()
+    avg_duration = round(float(avg_duration_raw), 1) if avg_duration_raw else 0.0
 
     status_rows = db.query(
         CallRecord.status,
@@ -138,6 +142,7 @@ async def get_analytics(db: Session = Depends(get_db)):
             "call_human": r.call_human,
             "summary":    r.summary or "",
             "attempt":    r.attempt,
+            "duration":   r.duration,
             "created_at": r.created_at.isoformat(),
         }
         for r in recent
@@ -149,6 +154,7 @@ async def get_analytics(db: Session = Depends(get_db)):
             "unique_phones": unique_phones,
             "human_needed":  human_needed,
             "avg_attempts":  avg_attempts,
+            "avg_duration":  avg_duration,
             "handoff_rate":  handoff_rate,
         },
         "status_distribution":    status_dist,

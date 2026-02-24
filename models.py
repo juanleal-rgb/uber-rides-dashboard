@@ -13,6 +13,7 @@ class CallRecord(Base):
     call_human = Column(Boolean,     nullable=False, default=False)
     summary    = Column(Text)
     attempt    = Column(Integer,     nullable=False, default=1)
+    duration   = Column(Integer,     nullable=False, default=0)
     created_at = Column(
         DateTime(timezone=True),
         nullable=False,

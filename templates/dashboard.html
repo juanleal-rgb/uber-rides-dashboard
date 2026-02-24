@@ -123,7 +123,7 @@
     <main class="max-w-screen-2xl mx-auto px-6 py-8 space-y-8">
 
         <!-- ===== SUMMARY CARDS ===== -->
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
 
             <div class="card-uber stat-card p-5">
                 <div class="flex items-center justify-between mb-3">
@@ -163,6 +163,17 @@
                     </div>
                 </div>
                 <p id="card-avg-attempts" class="text-3xl font-black text-black">—</p>
+            </div>
+
+            <div class="card-uber stat-card p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Avg Duration</span>
+                    <div class="w-8 h-8 rounded-lg bg-electric-cyan flex items-center justify-center">
+                        <i data-lucide="timer" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+                <p id="card-avg-duration" class="text-3xl font-black text-black">—</p>
+                <p class="text-xs text-gray-400 mt-1">seconds</p>
             </div>
 
             <div class="card-uber stat-card p-5">
@@ -252,6 +263,7 @@
                             <th class="text-left pb-3 pr-4">Sentiment</th>
                             <th class="text-left pb-3 pr-4">Human</th>
                             <th class="text-left pb-3 pr-4">Attempt</th>
+                            <th class="text-left pb-3 pr-4">Duration</th>
                             <th class="text-left pb-3 pr-4">Time</th>
                             <th class="text-left pb-3">Summary</th>
                         </tr>
@@ -436,6 +448,7 @@
                     <td class="py-3 pr-4 text-xs ${sentimentCls}">${capitalise(c.sentiment)}</td>
                     <td class="py-3 pr-4">${humanBadge}</td>
                     <td class="py-3 pr-4 text-xs text-center font-semibold">${c.attempt}</td>
+                    <td class="py-3 pr-4 text-xs text-center font-mono">${formatDuration(c.duration)}</td>
                     <td class="py-3 pr-4 text-xs text-gray-400 whitespace-nowrap">${timeAgo(c.created_at)}</td>
                     <td class="py-3 text-xs text-gray-500 max-w-xs">${summary}</td>
                 </tr>`;
@@ -454,6 +467,13 @@
             if (v === 'positive') return 'badge-positive';
             if (v === 'negative') return 'badge-negative';
             return 'badge-default';
+        }
+
+        function formatDuration(secs) {
+            if (!secs || secs === 0) return '0s';
+            const m = Math.floor(secs / 60);
+            const s = secs % 60;
+            return m > 0 ? `${m}m ${s}s` : `${s}s`;
         }
 
         function timeAgo(iso) {
@@ -485,8 +505,9 @@
                 document.getElementById('card-total').textContent       = d.summary.total_calls.toLocaleString();
                 document.getElementById('card-unique').textContent      = d.summary.unique_phones.toLocaleString();
                 document.getElementById('card-human').textContent       = d.summary.human_needed.toLocaleString();
-                document.getElementById('card-avg-attempts').textContent = d.summary.avg_attempts;
-                document.getElementById('card-handoff').textContent     = d.summary.handoff_rate + '%';
+                document.getElementById('card-avg-attempts').textContent  = d.summary.avg_attempts;
+                document.getElementById('card-avg-duration').textContent  = d.summary.avg_duration;
+                document.getElementById('card-handoff').textContent       = d.summary.handoff_rate + '%';
 
                 // Handoff rate big display + bar
                 document.getElementById('handoff-big').textContent = d.summary.handoff_rate + '%';

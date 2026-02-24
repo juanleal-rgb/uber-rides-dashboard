@@ -11,6 +11,7 @@ class CallRecordCreate(BaseModel):
     call_human: bool          = False
     summary:    Optional[str] = None
     attempt:    int           = 1
+    duration:   int           = 0
 
     @field_validator("call_human", mode="before")
     @classmethod
@@ -19,13 +20,13 @@ class CallRecordCreate(BaseModel):
             return v
         return str(v).strip().upper() == "TRUE"
 
-    @field_validator("attempt", mode="before")
+    @field_validator("attempt", "duration", mode="before")
     @classmethod
-    def parse_attempt(cls, v) -> int:
+    def parse_int_fields(cls, v) -> int:
         try:
             return int(v)
         except (ValueError, TypeError):
-            return 1
+            return 0
 
     model_config = {"populate_by_name": True}
 
@@ -38,6 +39,7 @@ class CallRecordResponse(BaseModel):
     call_human: bool
     summary:    Optional[str]
     attempt:    int
+    duration:   int
     created_at: datetime
 
     model_config = {"from_attributes": True}
