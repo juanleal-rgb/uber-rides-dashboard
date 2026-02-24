@@ -54,10 +54,12 @@
 
         .stat-card { animation: slide-in 0.5s ease forwards; opacity: 0; }
         .stat-card:nth-child(1) { animation-delay: 0.05s; }
-        .stat-card:nth-child(2) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.10s; }
         .stat-card:nth-child(3) { animation-delay: 0.15s; }
-        .stat-card:nth-child(4) { animation-delay: 0.2s; }
+        .stat-card:nth-child(4) { animation-delay: 0.20s; }
         .stat-card:nth-child(5) { animation-delay: 0.25s; }
+
+        .anim-card { animation: slide-in 0.5s ease forwards; opacity: 0; }
 
         .chart-container { position: relative; height: 260px; }
 
@@ -187,14 +189,14 @@
         <!-- ===== ROW 1: Status + Sentiment ===== -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <div class="card-uber p-6">
+            <div class="card-uber anim-card p-6" style="animation-delay:0.30s">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Call Status Distribution</h3>
                 <div class="chart-container">
                     <canvas id="statusChart"></canvas>
                 </div>
             </div>
 
-            <div class="card-uber p-6">
+            <div class="card-uber anim-card p-6" style="animation-delay:0.35s">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Sentiment Distribution</h3>
                 <div class="chart-container">
                     <canvas id="sentimentChart"></canvas>
@@ -206,14 +208,14 @@
         <!-- ===== ROW 2: Timeline + Top Phones ===== -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <div class="card-uber p-6">
+            <div class="card-uber anim-card p-6" style="animation-delay:0.40s">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Calls Over Time <span class="text-gray-400 font-normal normal-case">(last 30 days)</span></h3>
                 <div class="chart-container">
                     <canvas id="timeChart"></canvas>
                 </div>
             </div>
 
-            <div class="card-uber p-6">
+            <div class="card-uber anim-card p-6" style="animation-delay:0.45s">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Top Phone Numbers</h3>
                 <div class="chart-container">
                     <canvas id="phonesChart"></canvas>
@@ -223,7 +225,7 @@
         </div>
 
         <!-- ===== ROW 3: Duration Over Time (full width) ===== -->
-        <div class="card-uber p-6">
+        <div class="card-uber anim-card p-6" style="animation-delay:0.50s">
             <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Avg Call Duration Over Time <span class="text-gray-400 font-normal normal-case">(last 30 days, seconds)</span></h3>
             <div class="chart-container" style="height: 220px;">
                 <canvas id="durationTimeChart"></canvas>
@@ -233,14 +235,14 @@
         <!-- ===== ROW 4: Attempts + Handoff Rate ===== -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            <div class="card-uber p-6">
+            <div class="card-uber anim-card p-6" style="animation-delay:0.55s">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Attempts Distribution</h3>
                 <div class="chart-container">
                     <canvas id="attemptsChart"></canvas>
                 </div>
             </div>
 
-            <div class="card-uber p-6 flex flex-col items-center justify-center text-center">
+            <div class="card-uber anim-card p-6 flex flex-col items-center justify-center text-center" style="animation-delay:0.60s">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-6">Human Handoff Rate</h3>
                 <p id="handoff-big" class="text-7xl font-black text-black mb-3">0%</p>
                 <p class="text-gray-500 text-sm">of all calls escalated to a human agent</p>
@@ -252,7 +254,7 @@
         </div>
 
         <!-- ===== RECENT CALLS TABLE ===== -->
-        <div class="card-uber p-6">
+        <div class="card-uber anim-card p-6" style="animation-delay:0.65s">
             <div class="flex items-center justify-between mb-5">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Recent Calls</h3>
                 <span class="text-xs text-gray-400">Last 20 records</span>
