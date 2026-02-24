@@ -8,9 +8,9 @@ class CallRecordCreate(BaseModel):
     phone:      str
     status:     str           = "neutral"
     sentiment:  str           = "neutral"
-    call_human: str           = "FALSE"
+    call_human: bool          = False
     summary:    Optional[str] = None
-    attempt:    str           = "1"
+    attempt:    int           = 1
 
     @field_validator("call_human", mode="before")
     @classmethod
