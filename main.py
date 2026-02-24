@@ -117,6 +117,17 @@ async def get_analytics(db: Session = Depends(get_db)):
         for row in time_rows
     ]
 
+    duration_rows = db.query(
+        func.date_trunc("day", CallRecord.created_at).label("day"),
+        func.avg(CallRecord.duration).label("avg_duration")
+    ).filter(
+        CallRecord.created_at >= thirty_days_ago
+    ).group_by("day").order_by("day").all()
+    duration_over_time = [
+        {"date": row.day.strftime("%Y-%m-%d"), "avg_duration": round(float(row.avg_duration), 1)}
+        for row in duration_rows
+    ]
+
     phone_rows = db.query(
         CallRecord.phone,
         func.count(CallRecord.id).label("count")
@@ -165,6 +176,7 @@ async def get_analytics(db: Session = Depends(get_db)):
         "status_distribution":    status_dist,
         "sentiment_distribution": sentiment_dist,
         "calls_over_time":        calls_over_time,
+        "duration_over_time":     duration_over_time,
         "top_phones":             top_phones,
         "attempts_distribution":  attempts_dist,
         "recent_calls":           recent_calls,

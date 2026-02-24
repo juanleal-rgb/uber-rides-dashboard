@@ -230,7 +230,15 @@
 
         </div>
 
-        <!-- ===== ROW 3: Attempts + Handoff Rate ===== -->
+        <!-- ===== ROW 3: Duration Over Time (full width) ===== -->
+        <div class="card-uber p-6">
+            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Avg Call Duration Over Time <span class="text-gray-400 font-normal normal-case">(last 30 days, seconds)</span></h3>
+            <div class="chart-container" style="height: 220px;">
+                <canvas id="durationTimeChart"></canvas>
+            </div>
+        </div>
+
+        <!-- ===== ROW 4: Attempts + Handoff Rate ===== -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div class="card-uber p-6">
@@ -308,7 +316,7 @@
         const COLOR_PALETTE = ['#000000', '#0099BB', '#00B35E', '#B30050', '#2563EB', '#D97706', '#00A8B3', '#6B7280'];
 
         // Chart instances (kept for in-place updates)
-        let statusChart, sentimentChart, timeChart, phonesChart, attemptsChart;
+        let statusChart, sentimentChart, timeChart, phonesChart, attemptsChart, durationTimeChart;
 
         function buildDonut(canvasId, labels, data, colors) {
             const ctx = document.getElementById(canvasId).getContext('2d');
@@ -445,6 +453,40 @@
             });
         }
 
+        // ── Avg duration over time chart ──────────────────────────────────────
+        function initDurationTimeChart(rows) {
+            const ctx = document.getElementById('durationTimeChart').getContext('2d');
+            durationTimeChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: rows.map(r => r.date),
+                    datasets: [{
+                        label: 'Avg Duration (s)',
+                        data:  rows.map(r => r.avg_duration),
+                        borderColor: '#0099BB',
+                        backgroundColor: 'rgba(0,153,187,0.08)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#0099BB',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false }, ticks: { maxTicksLimit: 7, maxRotation: 0 } },
+                        y: { grid: { color: '#F0F0F0' }, beginAtZero: true,
+                             ticks: { callback: v => `${v}s` } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y}s` } }
+                    }
+                }
+            });
+        }
+
         // ── Recent calls table ────────────────────────────────────────────────
         function renderTable(calls) {
             const tbody = document.getElementById('recent-calls-body');
@@ -549,6 +591,7 @@
                     initTimeChart(d.calls_over_time);
                     initPhonesChart(d.top_phones);
                     initAttemptsChart(d.attempts_distribution);
+                    initDurationTimeChart(d.duration_over_time);
                     chartsInitialised = true;
                 } else {
                     // Subsequent refreshes: update in-place
@@ -572,6 +615,10 @@
                     attemptsChart.data.labels = Object.keys(d.attempts_distribution).map(k => `Attempt ${k}`);
                     attemptsChart.data.datasets[0].data = Object.values(d.attempts_distribution);
                     attemptsChart.update('active');
+
+                    durationTimeChart.data.labels = d.duration_over_time.map(r => r.date);
+                    durationTimeChart.data.datasets[0].data = d.duration_over_time.map(r => r.avg_duration);
+                    durationTimeChart.update('active');
                 }
 
                 renderTable(d.recent_calls);
