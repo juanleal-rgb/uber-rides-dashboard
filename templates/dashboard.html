@@ -232,17 +232,43 @@
             </div>
         </div>
 
-        <!-- ===== ROW 4: Attempts + Handoff Rate ===== -->
+        <!-- ===== ROW 4: Call Patterns ===== -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div class="card-uber anim-card p-6" style="animation-delay:0.55s">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Connected Calls by Hour</h3>
+                    <span id="hour-total" class="text-xs font-semibold text-neon-green"></span>
+                </div>
+                <div class="chart-container" style="height:200px">
+                    <canvas id="hourChart"></canvas>
+                </div>
+                <p id="hour-peak" class="text-xs text-gray-400 mt-3 text-center"></p>
+            </div>
+
+            <div class="card-uber anim-card p-6" style="animation-delay:0.60s">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Connected Calls by Day</h3>
+                    <span id="dow-peak" class="text-xs font-semibold text-gray-500">Peak: <span id="dow-peak-label" class="text-neon-green"></span></span>
+                </div>
+                <div class="chart-container" style="height:200px">
+                    <canvas id="dowChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===== ROW 5: Attempts + Handoff Rate ===== -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="card-uber anim-card p-6" style="animation-delay:0.65s">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Attempts Distribution</h3>
                 <div class="chart-container">
                     <canvas id="attemptsChart"></canvas>
                 </div>
             </div>
 
-            <div class="card-uber anim-card p-6 flex flex-col items-center justify-center text-center" style="animation-delay:0.60s">
+            <div class="card-uber anim-card p-6 flex flex-col items-center justify-center text-center" style="animation-delay:0.70s">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-6">Human Handoff Rate</h3>
                 <p id="handoff-big" class="text-7xl font-black text-black mb-3">0%</p>
                 <p class="text-gray-500 text-sm">of all calls escalated to a human agent</p>
@@ -254,7 +280,7 @@
         </div>
 
         <!-- ===== RECENT CALLS TABLE ===== -->
-        <div class="card-uber anim-card p-6" style="animation-delay:0.65s">
+        <div class="card-uber anim-card p-6" style="animation-delay:0.75s">
             <div class="flex items-center justify-between mb-5">
                 <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Recent Calls</h3>
                 <span class="text-xs text-gray-400">Last 20 records</span>
@@ -313,7 +339,21 @@
         const COLOR_PALETTE = ['#000000', '#0099BB', '#00B35E', '#B30050', '#2563EB', '#D97706', '#00A8B3', '#6B7280'];
 
         // Chart instances (kept for in-place updates)
-        let statusChart, sentimentChart, timeChart, phonesChart, attemptsChart, durationTimeChart;
+        let statusChart, sentimentChart, timeChart, phonesChart, attemptsChart, durationTimeChart, hourChart, dowChart;
+
+        const DOW_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+        function fillHours(rows) {
+            const map = {};
+            rows.forEach(r => map[r.hour] = r.count);
+            return Array.from({length: 24}, (_, i) => ({ hour: i, count: map[i] || 0 }));
+        }
+
+        function fillDow(rows) {
+            const map = {};
+            rows.forEach(r => map[r.dow] = r.count);
+            return DOW_NAMES.map((name, i) => ({ day: name, count: map[i] || 0 }));
+        }
 
         function buildDonut(canvasId, labels, data, colors) {
             const ctx = document.getElementById(canvasId).getContext('2d');
@@ -484,6 +524,72 @@
             });
         }
 
+        // ── Connected calls by hour ───────────────────────────────────────────
+        function initHourChart(rows) {
+            const filled = fillHours(rows);
+            const total  = filled.reduce((s, r) => s + r.count, 0);
+            document.getElementById('hour-total').textContent = total.toLocaleString() + ' connected';
+
+            const top3 = [...filled].sort((a, b) => b.count - a.count).slice(0, 3).filter(r => r.count > 0);
+            document.getElementById('hour-peak').textContent =
+                top3.length ? 'Peak hours: ' + top3.map(r => `${r.hour}:00 (${r.count})`).join(', ') : '';
+
+            const ctx = document.getElementById('hourChart').getContext('2d');
+            hourChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: filled.map(r => r.hour % 6 === 0 ? `${r.hour}h` : ''),
+                    datasets: [{
+                        data: filled.map(r => r.count),
+                        backgroundColor: filled.map(r => r.count > 0 ? '#00B35E' : '#E5E7EB'),
+                        borderRadius: 3,
+                        barPercentage: 0.7,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false }, ticks: { maxRotation: 0 } },
+                        y: { grid: { color: '#F5F5F5' }, beginAtZero: true, ticks: { precision: 0 } }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { title: (items) => `${filled[items[0].dataIndex].hour}:00` } }
+                    }
+                }
+            });
+        }
+
+        // ── Connected calls by day of week ────────────────────────────────────
+        function initDowChart(rows) {
+            const filled  = fillDow(rows);
+            const peak    = filled.reduce((a, b) => a.count >= b.count ? a : b, { count: 0 });
+            document.getElementById('dow-peak-label').textContent =
+                peak.count > 0 ? `${peak.day} (${peak.count})` : '—';
+
+            const ctx = document.getElementById('dowChart').getContext('2d');
+            dowChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: filled.map(r => r.day),
+                    datasets: [{
+                        data: filled.map(r => r.count),
+                        backgroundColor: filled.map(r => r.day === peak.day && r.count > 0 ? '#00B35E' : '#D1FAE5'),
+                        borderRadius: 4,
+                        barPercentage: 0.65,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: '#F5F5F5' }, beginAtZero: true, ticks: { precision: 0 } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
         // ── Recent calls table ────────────────────────────────────────────────
         function renderTable(calls) {
             const tbody = document.getElementById('recent-calls-body');
@@ -588,6 +694,8 @@
                         initPhonesChart(d.top_phones);
                         initAttemptsChart(d.attempts_distribution);
                         initDurationTimeChart(d.duration_over_time);
+                        initHourChart(d.calls_by_hour);
+                        initDowChart(d.calls_by_dow);
                         chartsInitialised = true;
                     } else {
                         updateDonut(statusChart,
@@ -614,6 +722,17 @@
                         durationTimeChart.data.labels = d.duration_over_time.map(r => r.date);
                         durationTimeChart.data.datasets[0].data = d.duration_over_time.map(r => r.avg_duration);
                         durationTimeChart.update('none');
+
+                        const hFilled = fillHours(d.calls_by_hour);
+                        hourChart.data.datasets[0].data = hFilled.map(r => r.count);
+                        hourChart.data.datasets[0].backgroundColor = hFilled.map(r => r.count > 0 ? '#00B35E' : '#E5E7EB');
+                        hourChart.update('none');
+
+                        const dFilled = fillDow(d.calls_by_dow);
+                        const dPeak   = dFilled.reduce((a, b) => a.count >= b.count ? a : b, { count: 0 });
+                        dowChart.data.datasets[0].data = dFilled.map(r => r.count);
+                        dowChart.data.datasets[0].backgroundColor = dFilled.map(r => r.day === dPeak.day && r.count > 0 ? '#00B35E' : '#D1FAE5');
+                        dowChart.update('none');
                     }
                 } catch (chartErr) {
                     console.error('Chart render error:', chartErr);

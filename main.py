@@ -166,6 +166,24 @@ async def get_analytics(db: Session = Depends(get_db)):
         for r in recent
     ]
 
+    # ── 7 query: connected calls by hour of day ──────────────────────────────
+    hour_rows = db.query(
+        func.extract("hour", CallRecord.created_at).label("hour"),
+        func.count(CallRecord.id).label("count"),
+    ).filter(
+        CallRecord.status != "failed"
+    ).group_by("hour").order_by("hour").all()
+    calls_by_hour = [{"hour": int(row.hour), "count": row.count} for row in hour_rows]
+
+    # ── 8 query: connected calls by day of week ───────────────────────────────
+    dow_rows = db.query(
+        func.extract("dow", CallRecord.created_at).label("dow"),
+        func.count(CallRecord.id).label("count"),
+    ).filter(
+        CallRecord.status != "failed"
+    ).group_by("dow").order_by("dow").all()
+    calls_by_dow = [{"dow": int(row.dow), "count": row.count} for row in dow_rows]
+
     return {
         "summary": {
             "total_calls":        total_calls,
@@ -182,4 +200,6 @@ async def get_analytics(db: Session = Depends(get_db)):
         "top_phones":             top_phones,
         "attempts_distribution":  attempts_dist,
         "recent_calls":           recent_calls,
+        "calls_by_hour":          calls_by_hour,
+        "calls_by_dow":           calls_by_dow,
     }
