@@ -1,5 +1,6 @@
 import os
 import logging
+from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 
 from fastapi import FastAPI, Depends, Request
@@ -18,12 +19,21 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-Base.metadata.create_all(bind=engine)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    logger.info("Starting up — creating database tables...")
+    Base.metadata.create_all(bind=engine)
+    logger.info("Database tables ready.")
+    yield
+    logger.info("Shutting down.")
+
 
 app = FastAPI(
     title="Uber Rides Call Analytics Dashboard",
     description="Analytics dashboard for call data ingestion and visualization",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan,
 )
 
 templates = Jinja2Templates(directory="templates")
