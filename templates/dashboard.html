@@ -60,19 +60,23 @@
 
         .chart-container { position: relative; height: 260px; }
 
-        /* Status badges */
-        .badge-neutral  { background: #EBF8FF; color: #0099BB; }
-        .badge-positive { background: #F0FDF4; color: #00B35E; }
-        .badge-negative { background: #FFF1F5; color: #B30050; }
-        .badge-default  { background: #F3F3F3; color: #555555; }
+        /* Status badges — one colour per call status */
+        .badge-success              { background: #F0FDF4; color: #00B35E; }
+        .badge-hang-up              { background: #F5F5F5; color: #6B7280; }
+        .badge-avoid-callback       { background: #FFFBEB; color: #D97706; }
+        .badge-failed               { background: #FFF1F2; color: #DC2626; }
+        .badge-not-the-right-person { background: #EFF6FF; color: #2563EB; }
+        .badge-not-interested       { background: #FDF2F8; color: #B30050; }
+        .badge-default              { background: #F3F3F3; color: #555555; }
 
         /* Human badge */
-        .badge-yes { background: #FFF1F5; color: #B30050; }
+        .badge-yes { background: #FFF1F2; color: #DC2626; }
         .badge-no  { background: #F3F3F3; color: #777777; }
 
-        .sentiment-positive { color: #00B35E; font-weight: 600; }
-        .sentiment-neutral  { color: #0099BB; font-weight: 600; }
-        .sentiment-negative { color: #B30050; font-weight: 600; }
+        /* Sentiment colours */
+        .sentiment-satisfied { color: #00B35E; font-weight: 600; }
+        .sentiment-neutral   { color: #0099BB; font-weight: 600; }
+        .sentiment-upset     { color: #DC2626; font-weight: 600; }
 
         .table-row {
             border-bottom: 1px solid #F0F0F0;
@@ -284,13 +288,24 @@
         Chart.defaults.font.family = "'Inter', 'Arial', sans-serif";
         Chart.defaults.color = '#6B7280';
 
-        const COLORS = {
-            neutral:  '#0099BB',
-            positive: '#00B35E',
-            negative: '#B30050',
-            default:  '#7A1AB3',
+        // One colour per call status (matches CSS badges)
+        const STATUS_COLORS = {
+            'success':              '#00B35E',
+            'hang up':              '#6B7280',
+            'avoid callback':       '#D97706',
+            'failed':               '#DC2626',
+            'not the right person': '#2563EB',
+            'not interested':       '#B30050',
         };
-        const COLOR_PALETTE = ['#000000', '#0099BB', '#00B35E', '#B30050', '#7A1AB3', '#B3491F', '#00A8B3', '#888888'];
+
+        // One colour per sentiment
+        const SENTIMENT_COLORS = {
+            'satisfied': '#00B35E',
+            'neutral':   '#0099BB',
+            'upset':     '#DC2626',
+        };
+
+        const COLOR_PALETTE = ['#000000', '#0099BB', '#00B35E', '#B30050', '#2563EB', '#D97706', '#00A8B3', '#6B7280'];
 
         // Chart instances (kept for in-place updates)
         let statusChart, sentimentChart, timeChart, phonesChart, attemptsChart;
@@ -322,9 +337,10 @@
             });
         }
 
-        function updateDonut(chart, labels, data) {
+        function updateDonut(chart, labels, data, colors) {
             chart.data.labels = labels;
             chart.data.datasets[0].data = data;
+            if (colors) chart.data.datasets[0].backgroundColor = colors;
             chart.update('active');
         }
 
@@ -332,7 +348,7 @@
         function initStatusChart(dist) {
             const labels = Object.keys(dist).map(k => capitalise(k));
             const data   = Object.values(dist);
-            const colors = Object.keys(dist).map(k => COLORS[k] || COLORS.default);
+            const colors = Object.keys(dist).map(k => STATUS_COLORS[k.toLowerCase()] || '#888888');
             statusChart = buildDonut('statusChart', labels, data, colors);
         }
 
@@ -340,7 +356,7 @@
         function initSentimentChart(dist) {
             const labels = Object.keys(dist).map(k => capitalise(k));
             const data   = Object.values(dist);
-            const colors = Object.keys(dist).map(k => COLORS[k] || COLORS.default);
+            const colors = Object.keys(dist).map(k => SENTIMENT_COLORS[k.toLowerCase()] || '#888888');
             sentimentChart = buildDonut('sentimentChart', labels, data, colors);
         }
 
@@ -437,9 +453,9 @@
                 return;
             }
             tbody.innerHTML = calls.map(c => {
-                const statusBadge   = badgeClass(c.status, 'status');
+                const statusBadge   = badgeClass(c.status);
                 const humanBadge    = c.call_human ? '<span class="badge-yes px-2.5 py-1 rounded-full text-xs font-semibold">Yes</span>' : '<span class="badge-no px-2.5 py-1 rounded-full text-xs font-semibold">No</span>';
-                const sentimentCls  = `sentiment-${c.sentiment}`;
+                const sentimentCls  = sentimentClass(c.sentiment);
                 const summary       = (c.summary || '').length > 70 ? c.summary.slice(0, 70) + '…' : c.summary || '—';
                 return `<tr class="table-row">
                     <td class="py-3 pr-4 text-gray-400 text-xs">${c.id}</td>
@@ -461,12 +477,25 @@
             return s.charAt(0).toUpperCase() + s.slice(1);
         }
 
-        function badgeClass(value, type) {
-            const v = (value || '').toLowerCase();
-            if (v === 'neutral')  return 'badge-neutral';
-            if (v === 'positive') return 'badge-positive';
-            if (v === 'negative') return 'badge-negative';
-            return 'badge-default';
+        function badgeClass(status) {
+            const map = {
+                'success':              'badge-success',
+                'hang up':              'badge-hang-up',
+                'avoid callback':       'badge-avoid-callback',
+                'failed':               'badge-failed',
+                'not the right person': 'badge-not-the-right-person',
+                'not interested':       'badge-not-interested',
+            };
+            return map[(status || '').toLowerCase()] || 'badge-default';
+        }
+
+        function sentimentClass(sentiment) {
+            const map = {
+                'satisfied': 'sentiment-satisfied',
+                'neutral':   'sentiment-neutral',
+                'upset':     'sentiment-upset',
+            };
+            return map[(sentiment || '').toLowerCase()] || 'sentiment-neutral';
         }
 
         function formatDuration(secs) {
@@ -525,10 +554,12 @@
                     // Subsequent refreshes: update in-place
                     updateDonut(statusChart,
                         Object.keys(d.status_distribution).map(capitalise),
-                        Object.values(d.status_distribution));
+                        Object.values(d.status_distribution),
+                        Object.keys(d.status_distribution).map(k => STATUS_COLORS[k.toLowerCase()] || '#888888'));
                     updateDonut(sentimentChart,
                         Object.keys(d.sentiment_distribution).map(capitalise),
-                        Object.values(d.sentiment_distribution));
+                        Object.values(d.sentiment_distribution),
+                        Object.keys(d.sentiment_distribution).map(k => SENTIMENT_COLORS[k.toLowerCase()] || '#888888'));
 
                     timeChart.data.labels = d.calls_over_time.map(r => r.date);
                     timeChart.data.datasets[0].data = d.calls_over_time.map(r => r.count);
