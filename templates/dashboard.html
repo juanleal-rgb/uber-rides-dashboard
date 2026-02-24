@@ -573,7 +573,6 @@
                 document.getElementById('card-avg-attempts').textContent  = d.summary.avg_attempts;
                 document.getElementById('card-avg-duration').textContent  = d.summary.avg_duration;
                 document.getElementById('card-hours-saved').textContent   = d.summary.total_hours_saved + 'h';
-                document.getElementById('card-handoff').textContent       = d.summary.handoff_rate + '%';
                 document.getElementById('handoff-big').textContent        = d.summary.handoff_rate + '%';
                 document.getElementById('handoff-bar').style.width        = Math.min(d.summary.handoff_rate, 100) + '%';
                 updateLastRefreshed();
