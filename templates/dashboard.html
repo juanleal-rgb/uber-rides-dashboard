@@ -216,9 +216,12 @@
             </div>
 
             <div class="card-uber anim-card p-6" style="animation-delay:0.45s">
-                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Top Phone Numbers</h3>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Best Attempt to Stop Retry Logic</h3>
+                    <span id="contact-best" class="text-xs font-semibold"></span>
+                </div>
                 <div class="chart-container">
-                    <canvas id="phonesChart"></canvas>
+                    <canvas id="contactRateChart"></canvas>
                 </div>
             </div>
 
@@ -339,7 +342,7 @@
         const COLOR_PALETTE = ['#14B8A6', '#6366F1', '#F59E0B', '#EF4444', '#B30050', '#0099BB', '#00A8B3', '#00B35E', '#D97706', '#6B7280'];
 
         // Chart instances (kept for in-place updates)
-        let statusChart, sentimentChart, timeChart, phonesChart, attemptsChart, durationTimeChart, hourChart, dowChart;
+        let statusChart, sentimentChart, timeChart, contactRateChart, attemptsChart, durationTimeChart, hourChart, dowChart;
 
         const DOW_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -435,29 +438,62 @@
             });
         }
 
-        // ── Top phones chart ──────────────────────────────────────────────────
-        function initPhonesChart(rows) {
-            const ctx = document.getElementById('phonesChart').getContext('2d');
-            phonesChart = new Chart(ctx, {
+        // ── Contact rate by attempt chart ─────────────────────────────────────
+        function contactRateColor(rate) {
+            if (rate >= 70) return '#14B8A6';
+            if (rate >= 40) return '#F59E0B';
+            return '#EF4444';
+        }
+
+        function initContactRateChart(rows) {
+            if (!rows.length) return;
+            // Last attempt still above 40% (amber threshold) — stop after this one
+            const worthwhile = rows.filter(r => r.rate >= 40);
+            const stopAfter  = worthwhile.length > 0 ? worthwhile[worthwhile.length - 1] : null;
+            const badge = document.getElementById('contact-best');
+            if (stopAfter) {
+                badge.textContent = `Stop after attempt ${stopAfter.attempt}`;
+                badge.style.color = contactRateColor(stopAfter.rate);
+            } else {
+                badge.textContent = 'Stop at attempt 1';
+                badge.style.color = '#EF4444';
+            }
+
+            const ctx = document.getElementById('contactRateChart').getContext('2d');
+            contactRateChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: rows.map(r => r.phone),
+                    labels: rows.map(r => `Attempt ${r.attempt}`),
                     datasets: [{
-                        label: 'Calls',
-                        data: rows.map(r => r.count),
-                        backgroundColor: COLOR_PALETTE.slice(0, rows.length),
+                        label: 'Contact Rate',
+                        data:  rows.map(r => r.rate),
+                        backgroundColor: rows.map(r => contactRateColor(r.rate)),
                         borderRadius: 4,
                     }]
                 },
                 options: {
-                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        x: { grid: { color: '#F0F0F0' }, beginAtZero: true, ticks: { precision: 0 } },
-                        y: { grid: { display: false } }
+                        x: { grid: { display: false } },
+                        y: {
+                            grid: { color: '#F0F0F0' },
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { callback: v => `${v}%` }
+                        }
                     },
-                    plugins: { legend: { display: false } }
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const r = rows[ctx.dataIndex];
+                                    return ` ${r.rate}% contact rate (${r.connected}/${r.total} calls)`;
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
@@ -693,7 +729,7 @@
                         initStatusChart(d.status_distribution);
                         initSentimentChart(d.sentiment_distribution);
                         initTimeChart(d.calls_over_time);
-                        initPhonesChart(d.top_phones);
+                        initContactRateChart(d.contact_rate_by_attempt);
                         initAttemptsChart(d.attempts_distribution);
                         initDurationTimeChart(d.duration_over_time);
                         initHourChart(d.calls_by_hour);
@@ -713,9 +749,10 @@
                         timeChart.data.datasets[0].data = d.calls_over_time.map(r => r.count);
                         timeChart.update('none');
 
-                        phonesChart.data.labels = d.top_phones.map(r => r.phone);
-                        phonesChart.data.datasets[0].data = d.top_phones.map(r => r.count);
-                        phonesChart.update('none');
+                        contactRateChart.data.labels = d.contact_rate_by_attempt.map(r => `Attempt ${r.attempt}`);
+                        contactRateChart.data.datasets[0].data = d.contact_rate_by_attempt.map(r => r.rate);
+                        contactRateChart.data.datasets[0].backgroundColor = d.contact_rate_by_attempt.map(r => contactRateColor(r.rate));
+                        contactRateChart.update('none');
 
                         attemptsChart.data.labels = Object.keys(d.attempts_distribution).map(k => `Attempt ${k}`);
                         attemptsChart.data.datasets[0].data = Object.values(d.attempts_distribution);

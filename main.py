@@ -130,15 +130,20 @@ async def get_analytics(db: Session = Depends(get_db)):
         for row in time_rows
     ]
 
-    # ── 5 query: top 10 phones ────────────────────────────────────────────────
-    top_phones = [
-        {"phone": row.phone, "count": row.count}
-        for row in db.query(
-            CallRecord.phone,
-            func.count(CallRecord.id).label("count")
-        ).group_by(CallRecord.phone).order_by(
-            func.count(CallRecord.id).desc()
-        ).limit(10).all()
+    # ── 5 query: contact rate per attempt ─────────────────────────────────────
+    contact_rate_rows = db.query(
+        CallRecord.attempt,
+        func.count(CallRecord.id).label("total"),
+        func.count(case((CallRecord.status != "failed", 1))).label("connected"),
+    ).group_by(CallRecord.attempt).order_by(CallRecord.attempt).all()
+    contact_rate_by_attempt = [
+        {
+            "attempt":   row.attempt,
+            "total":     row.total,
+            "connected": row.connected,
+            "rate":      round(row.connected / row.total * 100, 1) if row.total > 0 else 0.0,
+        }
+        for row in contact_rate_rows
     ]
 
     # ── 6 query: attempts distribution + recent calls (combined fetch) ────────
@@ -197,7 +202,7 @@ async def get_analytics(db: Session = Depends(get_db)):
         "sentiment_distribution": sentiment_dist,
         "calls_over_time":        calls_over_time,
         "duration_over_time":     duration_over_time,
-        "top_phones":             top_phones,
+        "contact_rate_by_attempt": contact_rate_by_attempt,
         "attempts_distribution":  attempts_dist,
         "recent_calls":           recent_calls,
         "calls_by_hour":          calls_by_hour,
