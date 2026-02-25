@@ -64,11 +64,11 @@
         .chart-container { position: relative; height: 260px; }
 
         /* Status badges — one colour per call status */
-        .badge-success              { background: #F0FDF4; color: #00B35E; }
+        .badge-success              { background: #F0FDFA; color: #14B8A6; }
         .badge-hang-up              { background: #F5F5F5; color: #6B7280; }
-        .badge-avoid-callback       { background: #FFFBEB; color: #D97706; }
-        .badge-failed               { background: #FFF1F2; color: #DC2626; }
-        .badge-not-the-right-person { background: #EFF6FF; color: #2563EB; }
+        .badge-avoid-callback       { background: #FFFBEB; color: #F59E0B; }
+        .badge-failed               { background: #FEF2F2; color: #EF4444; }
+        .badge-not-the-right-person { background: #EEF2FF; color: #6366F1; }
         .badge-not-interested       { background: #FDF2F8; color: #B30050; }
         .badge-default              { background: #F3F3F3; color: #555555; }
 
@@ -77,9 +77,9 @@
         .badge-no  { background: #F3F3F3; color: #777777; }
 
         /* Sentiment colours */
-        .sentiment-satisfied { color: #00B35E; font-weight: 600; }
-        .sentiment-neutral   { color: #0099BB; font-weight: 600; }
-        .sentiment-upset     { color: #DC2626; font-weight: 600; }
+        .sentiment-satisfied { color: #14B8A6; font-weight: 600; }
+        .sentiment-neutral   { color: #6366F1; font-weight: 600; }
+        .sentiment-upset     { color: #EF4444; font-weight: 600; }
 
         .table-row {
             border-bottom: 1px solid #F0F0F0;
@@ -238,7 +238,7 @@
             <div class="card-uber anim-card p-6" style="animation-delay:0.55s">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Connected Calls by Hour</h3>
-                    <span id="hour-total" class="text-xs font-semibold text-neon-green"></span>
+                    <span id="hour-total" class="text-xs font-semibold" style="color:#6366F1"></span>
                 </div>
                 <div class="chart-container" style="height:200px">
                     <canvas id="hourChart"></canvas>
@@ -249,7 +249,7 @@
             <div class="card-uber anim-card p-6" style="animation-delay:0.60s">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Connected Calls by Day</h3>
-                    <span id="dow-peak" class="text-xs font-semibold text-gray-500">Peak: <span id="dow-peak-label" class="text-neon-green"></span></span>
+                    <span id="dow-peak" class="text-xs font-semibold text-gray-500">Peak: <span id="dow-peak-label" style="color:#F59E0B"></span></span>
                 </div>
                 <div class="chart-container" style="height:200px">
                     <canvas id="dowChart"></canvas>
@@ -321,22 +321,22 @@
 
         // One colour per call status (matches CSS badges)
         const STATUS_COLORS = {
-            'success':              '#00B35E',
+            'success':              '#14B8A6',
             'hang up':              '#6B7280',
-            'avoid callback':       '#D97706',
-            'failed':               '#DC2626',
-            'not the right person': '#2563EB',
+            'avoid callback':       '#F59E0B',
+            'failed':               '#EF4444',
+            'not the right person': '#6366F1',
             'not interested':       '#B30050',
         };
 
         // One colour per sentiment
         const SENTIMENT_COLORS = {
-            'satisfied': '#00B35E',
-            'neutral':   '#0099BB',
-            'upset':     '#DC2626',
+            'satisfied': '#14B8A6',
+            'neutral':   '#6366F1',
+            'upset':     '#EF4444',
         };
 
-        const COLOR_PALETTE = ['#000000', '#0099BB', '#00B35E', '#B30050', '#2563EB', '#D97706', '#00A8B3', '#6B7280'];
+        const COLOR_PALETTE = ['#14B8A6', '#6366F1', '#F59E0B', '#EF4444', '#B30050', '#0099BB', '#00A8B3', '#00B35E', '#D97706', '#6B7280'];
 
         // Chart instances (kept for in-place updates)
         let statusChart, sentimentChart, timeChart, phonesChart, attemptsChart, durationTimeChart, hourChart, dowChart;
@@ -463,6 +463,8 @@
         }
 
         // ── Attempts distribution chart ───────────────────────────────────────
+        const ATTEMPT_COLOR = '#14B8A6'; // teal-500
+
         function initAttemptsChart(dist) {
             const ctx = document.getElementById('attemptsChart').getContext('2d');
             const labels = Object.keys(dist).map(k => `Attempt ${k}`);
@@ -474,7 +476,7 @@
                     datasets: [{
                         label: 'Calls',
                         data,
-                        backgroundColor: '#000000',
+                        backgroundColor: ATTEMPT_COLOR,
                         borderRadius: 4,
                     }]
                 },
@@ -541,7 +543,7 @@
                     labels: filled.map(r => r.hour % 6 === 0 ? `${r.hour}h` : ''),
                     datasets: [{
                         data: filled.map(r => r.count),
-                        backgroundColor: filled.map(r => r.count > 0 ? '#00B35E' : '#E5E7EB'),
+                        backgroundColor: filled.map(r => r.count > 0 ? '#6366F1' : '#E5E7EB'),
                         borderRadius: 3,
                         barPercentage: 0.7,
                     }]
@@ -574,7 +576,7 @@
                     labels: filled.map(r => r.day),
                     datasets: [{
                         data: filled.map(r => r.count),
-                        backgroundColor: filled.map(r => r.day === peak.day && r.count > 0 ? '#00B35E' : '#D1FAE5'),
+                        backgroundColor: filled.map(r => r.day === peak.day && r.count > 0 ? '#F59E0B' : '#FEF3C7'),
                         borderRadius: 4,
                         barPercentage: 0.65,
                     }]
@@ -717,6 +719,7 @@
 
                         attemptsChart.data.labels = Object.keys(d.attempts_distribution).map(k => `Attempt ${k}`);
                         attemptsChart.data.datasets[0].data = Object.values(d.attempts_distribution);
+                        attemptsChart.data.datasets[0].backgroundColor = ATTEMPT_COLOR;
                         attemptsChart.update('none');
 
                         durationTimeChart.data.labels = d.duration_over_time.map(r => r.date);
@@ -725,13 +728,13 @@
 
                         const hFilled = fillHours(d.calls_by_hour);
                         hourChart.data.datasets[0].data = hFilled.map(r => r.count);
-                        hourChart.data.datasets[0].backgroundColor = hFilled.map(r => r.count > 0 ? '#00B35E' : '#E5E7EB');
+                        hourChart.data.datasets[0].backgroundColor = hFilled.map(r => r.count > 0 ? '#6366F1' : '#E5E7EB');
                         hourChart.update('none');
 
                         const dFilled = fillDow(d.calls_by_dow);
                         const dPeak   = dFilled.reduce((a, b) => a.count >= b.count ? a : b, { count: 0 });
                         dowChart.data.datasets[0].data = dFilled.map(r => r.count);
-                        dowChart.data.datasets[0].backgroundColor = dFilled.map(r => r.day === dPeak.day && r.count > 0 ? '#00B35E' : '#D1FAE5');
+                        dowChart.data.datasets[0].backgroundColor = dFilled.map(r => r.day === dPeak.day && r.count > 0 ? '#F59E0B' : '#FEF3C7');
                         dowChart.update('none');
                     }
                 } catch (chartErr) {
