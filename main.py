@@ -125,7 +125,6 @@ async def get_analytics(
         func.avg(CallRecord.attempt).label("avg_attempts"),
         func.avg(CallRecord.duration).label("avg_duration"),
         func.sum(CallRecord.duration + 120).label("total_seconds_saved"),
-        func.sum(CallRecord.attempt).label("total_attempts"),
     )).one()
 
     total_calls       = s.total_calls or 0
@@ -134,7 +133,7 @@ async def get_analytics(
     avg_duration      = round(float(s.avg_duration), 1) if s.avg_duration else 0.0
     total_hours_saved = round(float(s.total_seconds_saved or 0) / 3600, 1)
     handoff_rate      = round((human_needed / total_calls * 100) if total_calls > 0 else 0.0, 1)
-    total_attempts    = int(s.total_attempts or 0)
+    total_attempts    = total_calls  # each record = 1 individual call attempt
 
     # ── 1b: new KPIs ─────────────────────────────────────────────────────────
     partners_contacted = cf(db.query(
