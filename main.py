@@ -1,10 +1,11 @@
 import os
+import hashlib
 import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 
-from fastapi import FastAPI, Depends, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Depends, Request, Form, Cookie
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -19,6 +20,9 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+
+DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", "uber_x_happyrobot_2026")
+AUTH_TOKEN = hashlib.sha256(DASHBOARD_PASSWORD.encode()).hexdigest()
 
 
 @asynccontextmanager
@@ -51,8 +55,28 @@ async def health_check():
     return {"status": "ok", "timestamp": datetime.utcnow().isoformat()}
 
 
+@app.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request, "error": None})
+
+
+@app.post("/login")
+async def login_post(request: Request, password: str = Form(...)):
+    if password == DASHBOARD_PASSWORD:
+        response = RedirectResponse(url="/", status_code=302)
+        response.set_cookie(key="dashboard_auth", value=AUTH_TOKEN, httponly=True, samesite="lax")
+        return response
+    return templates.TemplateResponse(
+        "login.html",
+        {"request": request, "error": "Incorrect password. Please try again."},
+        status_code=401,
+    )
+
+
 @app.get("/", response_class=HTMLResponse)
-async def dashboard(request: Request):
+async def dashboard(request: Request, dashboard_auth: str = Cookie(default=None)):
+    if dashboard_auth != AUTH_TOKEN:
+        return RedirectResponse(url="/login", status_code=302)
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
 

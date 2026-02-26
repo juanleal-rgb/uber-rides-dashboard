@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — Uber Call Analytics</title>
+    <link rel="icon" type="image/png" href="/static/Uber_logo_browser.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'uber-black': '#000000',
+                        'uber-dark':  '#0a0a0a',
+                        'neon-green': '#00B35E',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes slide-in {
+            from { opacity: 0; transform: translateY(24px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%       { transform: translateX(-6px); }
+            40%       { transform: translateX(6px); }
+            60%       { transform: translateX(-4px); }
+            80%       { transform: translateX(4px); }
+        }
+
+        body { background: #F7F7F7; }
+
+        .login-card {
+            background: #FFFFFF;
+            border: 1px solid #E5E5E5;
+            border-radius: 16px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.07);
+            animation: slide-in 0.45s ease forwards;
+            opacity: 0;
+        }
+        .login-card.shake {
+            animation: shake 0.4s ease;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 11px 42px 11px 14px;
+            border: 1.5px solid #E5E5E5;
+            border-radius: 10px;
+            font-size: 0.875rem;
+            outline: none;
+            background: #FAFAFA;
+            color: #111111;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+        .input-field:focus {
+            border-color: #000000;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+        }
+        .input-field.input-error {
+            border-color: #EF4444;
+            background: #FFFAFA;
+        }
+        .input-field.input-error:focus {
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.10);
+        }
+
+        .btn-signin {
+            width: 100%;
+            padding: 12px;
+            background: #000000;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.01em;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-signin:hover  { background: #1a1a1a; }
+        .btn-signin:active { transform: scale(0.99); }
+
+        .error-box {
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #DC2626;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-bar { background: #000000; }
+
+        .toggle-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #9CA3AF;
+            transition: color 0.15s;
+            display: flex;
+            align-items: center;
+        }
+        .toggle-eye:hover { color: #374151; }
+
+        .logo-divider {
+            width: 1px; height: 28px;
+            background: rgba(255,255,255,0.25);
+        }
+        .logo-divider-dark {
+            width: 1px; height: 22px;
+            background: #D4D4D4;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- HEADER -->
+    <header class="header-bar text-white px-6 py-4 shadow-lg">
+        <div class="max-w-screen-2xl mx-auto flex items-center gap-4">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
+                 alt="Uber" class="h-6 brightness-0 invert">
+            <div class="logo-divider"></div>
+            <img src="/static/happyrobot/Footer-expand-happyrobot_white.svg"
+                 alt="HappyRobot" class="h-5">
+            <div class="logo-divider"></div>
+            <span class="text-white font-semibold text-lg tracking-tight">Call Analytics</span>
+        </div>
+    </header>
+
+    <!-- CENTERED CARD -->
+    <main class="flex-1 flex items-center justify-center p-6">
+        <div class="login-card w-full max-w-sm px-8 py-10" id="login-card">
+
+            <!-- Logos -->
+            <div class="flex items-center justify-center gap-4 mb-8">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png"
+                     alt="Uber" class="h-7" style="filter: brightness(0);">
+                <div class="logo-divider-dark"></div>
+                <img src="/static/happyrobot/Footer-expand-happyrobot_white.svg"
+                     alt="HappyRobot" class="h-5" style="filter: invert(1);">
+            </div>
+
+            <!-- Title -->
+            <h1 class="text-xl font-bold text-gray-900 text-center mb-1">Access Required</h1>
+            <p class="text-sm text-gray-500 text-center mb-7">Enter your password to view the dashboard</p>
+
+            <!-- Error message -->
+            {% if error %}
+            <div class="error-box mb-5">
+                <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            <!-- Form -->
+            <form method="POST" action="/login" onsubmit="onSubmit(event)">
+                <div class="mb-5">
+                    <label class="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wider">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <input
+                            id="pwd"
+                            name="password"
+                            type="password"
+                            class="input-field {% if error %}input-error{% endif %}"
+                            placeholder="••••••••••••••••••••"
+                            autocomplete="current-password"
+                            autofocus
+                        >
+                        <span class="toggle-eye" onclick="togglePwd()" title="Show / hide password">
+                            <i id="eye-icon" data-lucide="eye" class="w-4 h-4"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-signin" id="submit-btn">
+                    Sign In
+                </button>
+            </form>
+
+        </div>
+    </main>
+
+    <script>
+        lucide.createIcons(); // needed for alert-circle and eye icons
+
+        {% if error %}
+        // Shake the card on error
+        const card = document.getElementById('login-card');
+        card.style.animation = 'none';
+        card.style.opacity   = '1';
+        setTimeout(() => { card.classList.add('shake'); }, 50);
+        card.addEventListener('animationend', () => card.classList.remove('shake'), { once: true });
+        {% endif %}
+
+        function togglePwd() {
+            const input = document.getElementById('pwd');
+            const icon  = document.getElementById('eye-icon');
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            icon.setAttribute('data-lucide', isHidden ? 'eye-off' : 'eye');
+            lucide.createIcons();
+        }
+
+        function onSubmit(e) {
+            const btn = document.getElementById('submit-btn');
+            btn.textContent = 'Signing in…';
+            btn.disabled = true;
+        }
+    </script>
+
+</body>
+</html>
