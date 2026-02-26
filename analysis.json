@@ -1,0 +1,1795 @@
+[
+  {
+    "phone": "+34 606121779",
+    "partner_name": "SANTIAGO M CABRERA LOPEZ",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 10.0,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 744459194",
+    "partner_name": "Ignacio Tello Sirgado",
+    "calls_excluding_voicemail": 6,
+    "minutes_excluding_voicemail": 9.78,
+    "result_breakdown": {
+      "hang up": 4,
+      "not the right person": 1,
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 670220000",
+    "partner_name": "FRANCISCO JAVIER TORRALBO BALLESTEROS",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 7.32,
+    "result_breakdown": {
+      "success": 1,
+      "not the right person": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 643835780",
+    "partner_name": "NAUMAN AKRAM",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 6.58,
+    "result_breakdown": {
+      "success": 2,
+      "voicemail": 2
+    }
+  },
+  {
+    "phone": "+34 650139924",
+    "partner_name": "Jose Asuncion Portocarrero Mendoza",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 6.05,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 660783334",
+    "partner_name": "SILVIA MEZA TUNJAR",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 5.63,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 2
+    }
+  },
+  {
+    "phone": "+34 642592708",
+    "partner_name": "MOHAMED EL AMINE AMAROUCH",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 5.45,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 602866910",
+    "partner_name": "BALJINDER SINGH",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 5.25,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 622639542",
+    "partner_name": "Jose Villafaina Parra",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 5.12,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 722279400",
+    "partner_name": "RICARDO QUIROZ QUISPE",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 5.05,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 640962431",
+    "partner_name": "FAYYAZ BASHIR",
+    "calls_excluding_voicemail": 4,
+    "minutes_excluding_voicemail": 5.0,
+    "result_breakdown": {
+      "success": 2,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 666016842",
+    "partner_name": "RAZIQ TRANSFER SERVICE SL",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 4.93,
+    "result_breakdown": {
+      "success": 1,
+      "not the right person": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 677695022",
+    "partner_name": "DANISH BASHIR AHMED BIBI",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 4.8,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 632704029",
+    "partner_name": "MOHSIN RASHID AKHTAR",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 4.75,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 2,
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 610910520",
+    "partner_name": "Madrile\u00f1a de Uveteces",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 4.7,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 620704123",
+    "partner_name": "Luis Francisco Gomez De Salazar Diaz Faes",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 4.57,
+    "result_breakdown": {
+      "callback requested": 1,
+      "success": 1,
+      "hang up": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 695809715",
+    "partner_name": "Real Estate Banus SL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 4.52,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 613034956",
+    "partner_name": "VALERIA ANABEL GONZALEZ",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 4.47,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 601460391",
+    "partner_name": "ZULQARNAIN ILYAS AKHTAR",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 4.35,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 632248443",
+    "partner_name": "Asjed Muhammad",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 4.33,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 666328756",
+    "partner_name": "Andres David Martinez Sequera",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 4.22,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 697434334",
+    "partner_name": "LYNDA AZMANE",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 3.92,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 675313007",
+    "partner_name": "TRASLADOS EL RINCON SL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 3.88,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 617746711",
+    "partner_name": "David Martin Berdague",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 3.78,
+    "result_breakdown": {
+      "success": 1,
+      "not interested": 1
+    }
+  },
+  {
+    "phone": "+34 619493837",
+    "partner_name": "DARIA KRUGLYAK IVANOVA",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 3.72,
+    "result_breakdown": {
+      "not interested": 1,
+      "voicemail": 2,
+      "success": 1
+    }
+  },
+  {
+    "phone": "++351933653061",
+    "partner_name": "Bruno",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 3.65,
+    "result_breakdown": {
+      "not the right person": 1
+    }
+  },
+  {
+    "phone": "+34 610157624",
+    "partner_name": "CARLOS EDUARDO GONZALEZ SALCEDO",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 3.63,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 666786098",
+    "partner_name": "muzamal bilal",
+    "calls_excluding_voicemail": 5,
+    "minutes_excluding_voicemail": 3.55,
+    "result_breakdown": {
+      "success": 2,
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 674083789",
+    "partner_name": "ANTONIO JOSE ROMERO DAVILA",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 3.5,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 663839323",
+    "partner_name": "Jorge Andres Lopez Maza",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 3.38,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 626826139",
+    "partner_name": "RODRIGO GARCIA SAN FRANCISCO",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 3.25,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 665889269",
+    "partner_name": "Liz Rinc\u00f3n",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 3.15,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 685078743",
+    "partner_name": "Juan Carlos Zabala Ubri",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 3.07,
+    "result_breakdown": {
+      "success": 2
+    }
+  },
+  {
+    "phone": "+34 686762329",
+    "partner_name": "L and C PREMIER SL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 3.07,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 698717784",
+    "partner_name": "Abderrahim Errizqi Kahouaji",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 3.0,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 688188865",
+    "partner_name": "Yapeng Guo",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 2.88,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 600894763",
+    "partner_name": "Inversiones Louabi 72 SL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.85,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 2
+    }
+  },
+  {
+    "phone": "+34 633267959",
+    "partner_name": "Porras Ag\u00fcera costa del sol sl",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 2.85,
+    "result_breakdown": {
+      "avoid callback": 1,
+      "voicemail": 2,
+      "not the right person": 1
+    }
+  },
+  {
+    "phone": "+34 672380807",
+    "partner_name": "ABDELKADER AHMED AMAR",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 2.62,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 699981395",
+    "partner_name": "IGNACIO JOSE BUCHELI SIZALY",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.58,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 671695489",
+    "partner_name": "MIRIAM GONZALEZ ZAMUDIO",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 2.55,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 610939798",
+    "partner_name": "PAUL BUCNARU",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.52,
+    "result_breakdown": {
+      "not interested": 1
+    }
+  },
+  {
+    "phone": "+34 602034152",
+    "partner_name": "SAQIB IQBAL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.48,
+    "result_breakdown": {
+      "callback requested": 1
+    }
+  },
+  {
+    "phone": "+34 612534977",
+    "partner_name": "Eizen Awan Awan",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 2.48,
+    "result_breakdown": {
+      "not the right person": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 670382522",
+    "partner_name": "David Alfred Collins Sanchez Cutillas",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 2.4,
+    "result_breakdown": {
+      "not interested": 1,
+      "hang up": 1,
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 681050712",
+    "partner_name": "Arturo Felipe Alonso",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.38,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 676348050",
+    "partner_name": "Jose Leonardo De Freitas Fernandes",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.38,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 622109200",
+    "partner_name": "MIGUEL ANGEL S\u00e1nchez quiles",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.35,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 667878224",
+    "partner_name": "MUSHARRAF PARVEZ",
+    "calls_excluding_voicemail": 5,
+    "minutes_excluding_voicemail": 2.3,
+    "result_breakdown": {
+      "success": 1,
+      "not interested": 1,
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 642579163",
+    "partner_name": "ALEXANDRU NEAMTI DOMNITI",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 2.28,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 633566428",
+    "partner_name": "MANUEL ALCAIDE NUNEZ",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 2.27,
+    "result_breakdown": {
+      "voicemail": 2,
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 635354692",
+    "partner_name": "Jose Estevenz Arias Castro",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 2.2,
+    "result_breakdown": {
+      "success": 1,
+      "not interested": 1,
+      "voicemail": 2
+    }
+  },
+  {
+    "phone": "+34 669192535",
+    "partner_name": "LASHA VASHAKMADZE",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.18,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 647499422",
+    "partner_name": "Dmytro Filipov",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 2.13,
+    "result_breakdown": {
+      "not interested": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 640388412",
+    "partner_name": "Mohamed Badr Ibhouden",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.13,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 620352539",
+    "partner_name": "MUSTAPHA BAKOUR",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.08,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 600515909",
+    "partner_name": "LUIS BRETONES DEL POZO",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 2.03,
+    "result_breakdown": {
+      "avoid callback": 1
+    }
+  },
+  {
+    "phone": "+34 669336082",
+    "partner_name": "PABLO ANDRES GARCIA",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.95,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 690064878",
+    "partner_name": "Jose Diego Perez Fernandez",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.88,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 632994425",
+    "partner_name": "Qamar Abbas Hayat Bibi",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 1.87,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 645929863",
+    "partner_name": "Alejandro Garcia Ortiz",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.83,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 2
+    }
+  },
+  {
+    "phone": "+34 618231043",
+    "partner_name": "ALFREDO MARTIN VELAZ",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.8,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 636980404",
+    "partner_name": "MIRIAM ESPINAL CRUCES",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.72,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 632420332",
+    "partner_name": "AMIR RAZA",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.72,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 640200949",
+    "partner_name": "Ali Hassan Boota Parveen",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 1.68,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 666157050",
+    "partner_name": "FOUAD HAMYANI HAMYANI",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.68,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 637350047",
+    "partner_name": "LORENA CARVAJAL LORENTE",
+    "calls_excluding_voicemail": 4,
+    "minutes_excluding_voicemail": 1.63,
+    "result_breakdown": {
+      "callback requested": 1,
+      "hang up": 3,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 698822389",
+    "partner_name": "PATAGONIA IBIZA SL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.63,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 690154906",
+    "partner_name": "RAYEEZ MOHAMED NOOR MOHAMED MOHAMED  MOHIDEEN",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 1.62,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 686542706",
+    "partner_name": "Luc\u00eda Serrano Mu\u00f1oz",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.58,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 657044660",
+    "partner_name": "Mar\u00eda Jes\u00fas De Arriba Martin",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.48,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 626210602",
+    "partner_name": "Lanzadera Shuttle Airport Services SL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.4,
+    "result_breakdown": {
+      "avoid callback": 1
+    }
+  },
+  {
+    "phone": "+34 671848572",
+    "partner_name": "JOSE AMAYA HEREDIA",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 1.38,
+    "result_breakdown": {
+      "avoid callback": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 674626812",
+    "partner_name": "Susana Mauri Ricardo",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.38,
+    "result_breakdown": {
+      "callback requested": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 660477778",
+    "partner_name": "GIOVANNI ALVAREZ RIOFRIO",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 1.37,
+    "result_breakdown": {
+      "not the right person": 1,
+      "callback requested": 1
+    }
+  },
+  {
+    "phone": "+34626502871",
+    "partner_name": "Lucas Martinez Collar",
+    "calls_excluding_voicemail": 4,
+    "minutes_excluding_voicemail": 1.37,
+    "result_breakdown": {
+      "not the right person": 1,
+      "voicemail": 1,
+      "avoid callback": 2,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34629124740",
+    "partner_name": "Pablo",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.35,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 642358408",
+    "partner_name": "Blue corporation SL",
+    "calls_excluding_voicemail": 4,
+    "minutes_excluding_voicemail": 1.28,
+    "result_breakdown": {
+      "not the right person": 2,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 655107210",
+    "partner_name": "Jose Antonio Guerrero Naranjo",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.28,
+    "result_breakdown": {
+      "success": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 640311466",
+    "partner_name": "Qixiang Wu",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.28,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 632333380",
+    "partner_name": "Ishtiaq Ahmed",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.27,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 626502871",
+    "partner_name": "Lucas Martinez Collar",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.27,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 607892034",
+    "partner_name": "JACOB JIMENEZ TRILLO",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 1.23,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 693493446",
+    "partner_name": "SORAYA SANTIAGO REYES",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.22,
+    "result_breakdown": {
+      "not interested": 1
+    }
+  },
+  {
+    "phone": "+34 625460569",
+    "partner_name": "FORTUNA BUSINESS CLASS",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 1.18,
+    "result_breakdown": {
+      "avoid callback": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 644807751",
+    "partner_name": "FELIPE IGNACIO RIVAS RIVAS",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.18,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 678909837",
+    "partner_name": "Sergio Ortiz Barroso",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 1.03,
+    "result_breakdown": {
+      "success": 1
+    }
+  },
+  {
+    "phone": "+34 631973440",
+    "partner_name": "Adeel Mukhtar",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.98,
+    "result_breakdown": {
+      "avoid callback": 1
+    }
+  },
+  {
+    "phone": "+34 652836418",
+    "partner_name": "LUXURY MALAGA TRANSFERS S.L.",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.98,
+    "result_breakdown": {
+      "avoid callback": 1
+    }
+  },
+  {
+    "phone": "+34 631188461",
+    "partner_name": "ADIL SHER",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.97,
+    "result_breakdown": {
+      "not interested": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 662015576",
+    "partner_name": "allsector business sociedad limitada",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.82,
+    "result_breakdown": {
+      "voicemail": 3,
+      "not the right person": 1
+    }
+  },
+  {
+    "phone": "+34 611242464",
+    "partner_name": "MARIA LOPEZ RODRIGUEZ",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.8,
+    "result_breakdown": {
+      "avoid callback": 1
+    }
+  },
+  {
+    "phone": "+34 632869564",
+    "partner_name": "SYED ALI JAFFAR NAQVI",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.7,
+    "result_breakdown": {
+      "avoid callback": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 643792166",
+    "partner_name": "Rody Amilker Trinidad Carlos",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.68,
+    "result_breakdown": {
+      "not interested": 1
+    }
+  },
+  {
+    "phone": "+34 631703912",
+    "partner_name": "SYED HAIDER",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.65,
+    "result_breakdown": {
+      "callback requested": 1,
+      "voicemail": 2
+    }
+  },
+  {
+    "phone": "+34 670884394",
+    "partner_name": "AUTOS LUXURY ESTEPONA SL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.63,
+    "result_breakdown": {
+      "callback requested": 1
+    }
+  },
+  {
+    "phone": "+34 636064434",
+    "partner_name": "Roberto Pe\u00f1a Font",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.57,
+    "result_breakdown": {
+      "avoid callback": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 664009144",
+    "partner_name": "AHSAN MEHMOOD",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.52,
+    "result_breakdown": {
+      "callback requested": 1
+    }
+  },
+  {
+    "phone": "+34 639965635",
+    "partner_name": "EUGENIO CARDENOSA SANCHO",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.5,
+    "result_breakdown": {
+      "avoid callback": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 632585202",
+    "partner_name": "USMAN AKHTAR BIBI",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.48,
+    "result_breakdown": {
+      "voicemail": 4,
+      "callback requested": 1
+    }
+  },
+  {
+    "phone": "+34 626195306",
+    "partner_name": "Abraham Perez Frutos",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.48,
+    "result_breakdown": {
+      "callback requested": 1,
+      "voicemail": 2
+    }
+  },
+  {
+    "phone": "+34 667676242",
+    "partner_name": "SANDRA MENENDEZ CASANUEVA",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.42,
+    "result_breakdown": {
+      "callback requested": 1
+    }
+  },
+  {
+    "phone": "+34 627578438",
+    "partner_name": "EMILIO JAVIER GARCIA BAYON",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.42,
+    "result_breakdown": {
+      "not interested": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 617284674",
+    "partner_name": "FATIMA ZAHRA ALAOUI LAMRANI FILALI",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.4,
+    "result_breakdown": {
+      "not the right person": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 668886706",
+    "partner_name": "LUNGIMIRANZA SL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.38,
+    "result_breakdown": {
+      "avoid callback": 1
+    }
+  },
+  {
+    "phone": "+34 677547159",
+    "partner_name": "FERNANDO LORENZO GONZALO HERNANDO",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.35,
+    "result_breakdown": {
+      "voicemail": 3,
+      "not interested": 1
+    }
+  },
+  {
+    "phone": "+34 624815892",
+    "partner_name": "MINA HOSSAIN ABDESELAM",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.33,
+    "result_breakdown": {
+      "not the right person": 1
+    }
+  },
+  {
+    "phone": "+34 648556183",
+    "partner_name": "HEYDIS ELISELOTTE GALAN PEREZ",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.32,
+    "result_breakdown": {
+      "not interested": 1
+    }
+  },
+  {
+    "phone": "+34 652804960",
+    "partner_name": "PABLO JOSE RODRIGUEZ CAMPOS",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.28,
+    "result_breakdown": {
+      "not the right person": 1,
+      "voicemail": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 651651252",
+    "partner_name": "kateryna kovalenko",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.28,
+    "result_breakdown": {
+      "not the right person": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 681943593",
+    "partner_name": "ALBERT CARRERAS ESPUNYA",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.22,
+    "result_breakdown": {
+      "not the right person": 1,
+      "voicemail": 2
+    }
+  },
+  {
+    "phone": "+34 663661992",
+    "partner_name": "BILAL ZAFAR IQBAL BEGUM",
+    "calls_excluding_voicemail": 4,
+    "minutes_excluding_voicemail": 0.22,
+    "result_breakdown": {
+      "hang up": 4
+    }
+  },
+  {
+    "phone": "+34 615501363",
+    "partner_name": "charly transfer sl",
+    "calls_excluding_voicemail": 8,
+    "minutes_excluding_voicemail": 0.22,
+    "result_breakdown": {
+      "hang up": 7,
+      "not the right person": 1
+    }
+  },
+  {
+    "phone": "+34 609508620",
+    "partner_name": "Beskidy Line S.L.",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.22,
+    "result_breakdown": {
+      "avoid callback": 1
+    }
+  },
+  {
+    "phone": "+34 605098747",
+    "partner_name": "Tahir Zaman Ahmad Begum",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.18,
+    "result_breakdown": {
+      "voicemail": 3,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 629794610",
+    "partner_name": "Autos Bellasur SL",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.17,
+    "result_breakdown": {
+      "not the right person": 1,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 625424819",
+    "partner_name": "Jose Edgar Montoya Correa",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.17,
+    "result_breakdown": {
+      "callback requested": 1
+    }
+  },
+  {
+    "phone": "+34 675319740",
+    "partner_name": "ANTONIO ANDREU FERNANDEZ",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.15,
+    "result_breakdown": {
+      "hang up": 3,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 670308911",
+    "partner_name": "WAHID ABDUL SAID",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.13,
+    "result_breakdown": {
+      "voicemail": 4,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 618057843",
+    "partner_name": "JULIO RAMOS NIETO",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.12,
+    "result_breakdown": {
+      "not interested": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 607552055",
+    "partner_name": "Miguel Jesus Mateos Rodriguez",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.12,
+    "result_breakdown": {
+      "not the right person": 1
+    }
+  },
+  {
+    "phone": "+34 629733543",
+    "partner_name": "Angel Trujillo Cruz",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.12,
+    "result_breakdown": {
+      "success": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 652900063",
+    "partner_name": "JUAN JESUS ASENCIO RAMIREZ",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.1,
+    "result_breakdown": {
+      "not the right person": 1
+    }
+  },
+  {
+    "phone": "+34 605126196",
+    "partner_name": "Khalil Atiet rabbi",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 615117632",
+    "partner_name": "Mariano Rodriguez Herraez",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 602426580",
+    "partner_name": "ENRIQUE IVAN PALOMINO LAGUNA",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 2,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 637104788",
+    "partner_name": "Ali Asad Ullah",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 615938416",
+    "partner_name": "HERYMAR MAIDU DE GOUVEIA ARTIGAS",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 2,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 614701747",
+    "partner_name": "TAXI BM ESPA\u00d1A S.L.",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 618200382",
+    "partner_name": "David Garc\u00eda Rodr\u00edguez",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 631629569",
+    "partner_name": "JESUS DANIEL CARMONA LUCENA",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 695872465",
+    "partner_name": "Sandra Elisa Navarro Ferrer",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 612204716",
+    "partner_name": "HICHAM ROJDAM BENHADDOU",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 2,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 675414294",
+    "partner_name": "MOHAMED DABDI MUSA",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 697922820",
+    "partner_name": "Cristhian Nahun Ramos Mejia",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 673960976",
+    "partner_name": "ACEROSCAR SL",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 695780303",
+    "partner_name": "LIAQAT ALI GHUMMAN BIBI",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 669666688",
+    "partner_name": "ZULQARNAIN KHAN GONDAL",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 697979770",
+    "partner_name": "NOMAN BASHIR RAJA NISA",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 662547890",
+    "partner_name": "Javier Cotado Rodriguez",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 660706814",
+    "partner_name": "Andre Ambrosio Da Silva",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 1,
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 629906532",
+    "partner_name": "Jose Alfonso Alvarez Vela",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 624353706",
+    "partner_name": "ZEESHAN BIN YAHYA",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 645794346",
+    "partner_name": "Cristian Oliver Torres Alia",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 666237243",
+    "partner_name": "Naima Bouhant",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 606379976",
+    "partner_name": "FABIO SARMIENTO SOLANO",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 2,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 609669889",
+    "partner_name": "Tutransfers PauyManu Slu",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 2,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 616133564",
+    "partner_name": "Mirian Lozano",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 606151963",
+    "partner_name": "LAURA PEREZ JARE\u00d1O",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 2,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 621065971",
+    "partner_name": "Pablo Martin dominguez",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 602025326",
+    "partner_name": "RAJA USMAN TARIQ PARVEEN",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 631113363",
+    "partner_name": "Hassan Zafar Raja",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 626411411",
+    "partner_name": "Transfers Cala d'Or, S.L.",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 656526366",
+    "partner_name": "Lorena Pilar Suarez",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 1,
+      "voicemail": 2
+    }
+  },
+  {
+    "phone": "+34 616484406",
+    "partner_name": "FERNANDO TORRES RODRIGUEZ",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 672642570",
+    "partner_name": "Jose Francisco Guillen Martin Toledano",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 633600621",
+    "partner_name": "GUILLERMO LOZANO MU\u00d1OZ",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 622507405",
+    "partner_name": "Luis Miguel Maria Dominguez",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 631398509",
+    "partner_name": "RAJEEV KATWAL BASNET",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 612244911",
+    "partner_name": "SHAMSHAD AMINA",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 624300225",
+    "partner_name": "ZAIN MUHAMMAD",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 664215109",
+    "partner_name": "kla Costablanca transfer",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 2,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 678907736",
+    "partner_name": "Vicente Pedro Morales Sancho",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 722223748",
+    "partner_name": "Masanfra SL",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 637820950",
+    "partner_name": "ION NARCIS GRASU",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 677825157",
+    "partner_name": "MIGUEL ANGEL GABALDON FONS",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 633406379",
+    "partner_name": "Transfer mobility Solutions",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 632036435",
+    "partner_name": "ISSAM DKIKAR EL GHOL",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 611811718",
+    "partner_name": "El Sayed Saad Abdel Rahman",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 603112597",
+    "partner_name": "OLIBERIO FRANCISCO CUJI MACAS",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 680976973",
+    "partner_name": "JESUS FERNANDEZ GOMEZ",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 722808066",
+    "partner_name": "AUTOS UNIFICADOS SL",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 613957756",
+    "partner_name": "GLOBAL YAVIN S.L.U.",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 615997044",
+    "partner_name": "JOSE LUIS PIZARRO BRE\u00d1A",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 609582043",
+    "partner_name": "JOSE MANUEL BENITEZ NARVAEZ",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 2,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 631575940",
+    "partner_name": "JUNAID AHMAD WARRAICH",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 2,
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 695256233",
+    "partner_name": "Shiny Sky Estates S.L",
+    "calls_excluding_voicemail": 3,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 3
+    }
+  },
+  {
+    "phone": "+34 646470462",
+    "partner_name": "Masnopago Professionals Sociedad Limitada",
+    "calls_excluding_voicemail": 2,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1,
+      "hang up": 2
+    }
+  },
+  {
+    "phone": "+34 647084396",
+    "partner_name": "Mentidero Gold Travel SL",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 3
+    }
+  },
+  {
+    "phone": "+34 666646374",
+    "partner_name": "ROBERTO CARDILES DEL TORO",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1,
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 676535117",
+    "partner_name": "Alfonso Francisco Sanchez Guillen",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 633953512",
+    "partner_name": "Diae El Ouahabi",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 651594660",
+    "partner_name": "Aya Harrak chtouki",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 625243823",
+    "partner_name": "Adel Kanoun Delai",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34 622296607",
+    "partner_name": "SYED MUHAMMAD BABB ALI",
+    "calls_excluding_voicemail": 0,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "voicemail": 1
+    }
+  },
+  {
+    "phone": "+34 621640391",
+    "partner_name": "Abdelilah Adkhoul",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 1
+    }
+  },
+  {
+    "phone": "+34602136903",
+    "partner_name": "Jose Camacho",
+    "calls_excluding_voicemail": 1,
+    "minutes_excluding_voicemail": 0.0,
+    "result_breakdown": {
+      "hang up": 1
+    }
+  }
+]

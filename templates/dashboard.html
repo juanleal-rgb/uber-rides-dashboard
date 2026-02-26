@@ -70,6 +70,8 @@
         .badge-failed               { background: #FEF2F2; color: #EF4444; }
         .badge-not-the-right-person { background: #EEF2FF; color: #6366F1; }
         .badge-not-interested       { background: #FDF2F8; color: #B30050; }
+        .badge-callback-requested   { background: #EFF6FF; color: #3B82F6; }
+        .badge-voicemail            { background: #F5F5F5; color: #A3A3A3; }
         .badge-default              { background: #F3F3F3; color: #555555; }
 
         /* Human badge */
@@ -236,26 +238,12 @@
 
         </div>
 
-        <!-- ===== ROW 2: Timeline + Top Phones ===== -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            <div class="card-uber anim-card p-6" style="animation-delay:0.40s">
-                <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Calls Over Time <span class="text-gray-400 font-normal normal-case">(last 30 days)</span></h3>
-                <div class="chart-container">
-                    <canvas id="timeChart"></canvas>
-                </div>
+        <!-- ===== ROW 2: Timeline (full width) ===== -->
+        <div class="card-uber anim-card p-6" style="animation-delay:0.40s">
+            <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">Calls Over Time <span class="text-gray-400 font-normal normal-case">(last 30 days)</span></h3>
+            <div class="chart-container">
+                <canvas id="timeChart"></canvas>
             </div>
-
-            <div class="card-uber anim-card p-6" style="animation-delay:0.45s">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Best Attempt to Stop Retry Logic</h3>
-                    <span id="contact-best" class="text-xs font-semibold"></span>
-                </div>
-                <div class="chart-container">
-                    <canvas id="contactRateChart"></canvas>
-                </div>
-            </div>
-
         </div>
 
         <!-- ===== ROW 3: Duration Over Time (full width) ===== -->
@@ -373,7 +361,7 @@
         const COLOR_PALETTE = ['#14B8A6', '#6366F1', '#F59E0B', '#EF4444', '#B30050', '#0099BB', '#00A8B3', '#00B35E', '#D97706', '#6B7280'];
 
         // Chart instances (kept for in-place updates)
-        let statusChart, sentimentChart, timeChart, contactRateChart, attemptsChart, durationTimeChart, hourChart, dowChart;
+        let statusChart, sentimentChart, timeChart, attemptsChart, durationTimeChart, hourChart, dowChart;
 
         const DOW_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -465,66 +453,6 @@
                         y: { grid: { color: '#F0F0F0' }, beginAtZero: true, ticks: { precision: 0 } }
                     },
                     plugins: { legend: { display: false } }
-                }
-            });
-        }
-
-        // ── Contact rate by attempt chart ─────────────────────────────────────
-        function contactRateColor(rate) {
-            if (rate >= 70) return '#14B8A6';
-            if (rate >= 40) return '#F59E0B';
-            return '#EF4444';
-        }
-
-        function initContactRateChart(rows) {
-            if (!rows.length) return;
-            // Last attempt still above 40% (amber threshold) — stop after this one
-            const worthwhile = rows.filter(r => r.rate >= 40);
-            const stopAfter  = worthwhile.length > 0 ? worthwhile[worthwhile.length - 1] : null;
-            const badge = document.getElementById('contact-best');
-            if (stopAfter) {
-                badge.textContent = `Stop after attempt ${stopAfter.attempt}`;
-                badge.style.color = contactRateColor(stopAfter.rate);
-            } else {
-                badge.textContent = 'Stop at attempt 1';
-                badge.style.color = '#EF4444';
-            }
-
-            const ctx = document.getElementById('contactRateChart').getContext('2d');
-            contactRateChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: rows.map(r => `Attempt ${r.attempt}`),
-                    datasets: [{
-                        label: 'Contact Rate',
-                        data:  rows.map(r => r.rate),
-                        backgroundColor: rows.map(r => contactRateColor(r.rate)),
-                        borderRadius: 4,
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: {
-                            grid: { color: '#F0F0F0' },
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: { callback: v => `${v}%` }
-                        }
-                    },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => {
-                                    const r = rows[ctx.dataIndex];
-                                    return ` ${r.rate}% contact rate (${r.connected}/${r.total} calls)`;
-                                }
-                            }
-                        }
-                    }
                 }
             });
         }
@@ -710,6 +638,8 @@
                 'failed':               'badge-failed',
                 'not the right person': 'badge-not-the-right-person',
                 'not interested':       'badge-not-interested',
+                'callback requested':   'badge-callback-requested',
+                'voicemail':            'badge-voicemail',
             };
             return map[(status || '').toLowerCase()] || 'badge-default';
         }
@@ -782,7 +712,6 @@
                         initStatusChart(d.status_distribution);
                         initSentimentChart(d.sentiment_distribution);
                         initTimeChart(d.calls_over_time);
-                        initContactRateChart(d.contact_rate_by_attempt);
                         initAttemptsChart(d.attempts_distribution);
                         initDurationTimeChart(d.duration_over_time);
                         initHourChart(d.calls_by_hour);
@@ -801,11 +730,6 @@
                         timeChart.data.labels = d.calls_over_time.map(r => r.date);
                         timeChart.data.datasets[0].data = d.calls_over_time.map(r => r.count);
                         timeChart.update('none');
-
-                        contactRateChart.data.labels = d.contact_rate_by_attempt.map(r => `Attempt ${r.attempt}`);
-                        contactRateChart.data.datasets[0].data = d.contact_rate_by_attempt.map(r => r.rate);
-                        contactRateChart.data.datasets[0].backgroundColor = d.contact_rate_by_attempt.map(r => contactRateColor(r.rate));
-                        contactRateChart.update('none');
 
                         attemptsChart.data.labels = Object.keys(d.attempts_distribution).map(k => `Attempt ${k}`);
                         attemptsChart.data.datasets[0].data = Object.values(d.attempts_distribution);

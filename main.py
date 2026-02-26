@@ -169,23 +169,7 @@ async def get_analytics(
         for row in time_rows
     ]
 
-    # ── 5 query: contact rate per attempt ─────────────────────────────────────
-    contact_rate_rows = cf(db.query(
-        CallRecord.attempt,
-        func.count(CallRecord.id).label("total"),
-        func.count(case((CallRecord.status != "failed", 1))).label("connected"),
-    )).group_by(CallRecord.attempt).order_by(CallRecord.attempt).all()
-    contact_rate_by_attempt = [
-        {
-            "attempt":   row.attempt,
-            "total":     row.total,
-            "connected": row.connected,
-            "rate":      round(row.connected / row.total * 100, 1) if row.total > 0 else 0.0,
-        }
-        for row in contact_rate_rows
-    ]
-
-    # ── 6 query: attempts distribution + recent calls (combined fetch) ────────
+    # ── 5 query: attempts distribution + recent calls (combined fetch) ────────
     attempt_rows = cf(db.query(
         CallRecord.attempt,
         func.count(CallRecord.id).label("count")
@@ -215,7 +199,7 @@ async def get_analytics(
         func.extract("hour", CallRecord.created_at).label("hour"),
         func.count(CallRecord.id).label("count"),
     )).filter(
-        CallRecord.status != "failed"
+        CallRecord.status.notin_(["failed", "voicemail"])
     ).group_by("hour").order_by("hour").all()
     calls_by_hour = [{"hour": int(row.hour), "count": row.count} for row in hour_rows]
 
@@ -224,7 +208,7 @@ async def get_analytics(
         func.extract("dow", CallRecord.created_at).label("dow"),
         func.count(CallRecord.id).label("count"),
     )).filter(
-        CallRecord.status != "failed"
+        CallRecord.status.notin_(["failed", "voicemail"])
     ).group_by("dow").order_by("dow").all()
     calls_by_dow = [{"dow": int(row.dow), "count": row.count} for row in dow_rows]
 
@@ -241,7 +225,6 @@ async def get_analytics(
         "sentiment_distribution": sentiment_dist,
         "calls_over_time":        calls_over_time,
         "duration_over_time":     duration_over_time,
-        "contact_rate_by_attempt": contact_rate_by_attempt,
         "attempts_distribution":  attempts_dist,
         "recent_calls":           recent_calls,
         "calls_by_hour":          calls_by_hour,
