@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Uber Rides — Call Analytics Dashboard</title>
-    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/c/cc/Uber_logo_2018.png">
+    <link rel="icon" type="image/png" href="/static/Uber_logo_browser.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -639,7 +639,7 @@
                 const statusBadge   = badgeClass(c.status);
                 const humanBadge    = c.call_human ? '<span class="badge-yes px-2.5 py-1 rounded-full text-xs font-semibold">Yes</span>' : '<span class="badge-no px-2.5 py-1 rounded-full text-xs font-semibold">No</span>';
                 const sentimentCls  = sentimentClass(c.sentiment);
-                const summary       = (c.summary || '').length > 70 ? c.summary.slice(0, 70) + '…' : c.summary || '—';
+                const summary       = c.summary || '—';
                 return `<tr class="table-row">
                     <td class="py-3 pr-4 text-gray-400 text-xs">${c.id}</td>
                     <td class="py-3 pr-4 font-mono text-xs font-semibold">${c.phone}</td>
@@ -649,7 +649,7 @@
                     <td class="py-3 pr-4 text-xs text-center font-semibold">${c.attempt}</td>
                     <td class="py-3 pr-4 text-xs text-center font-mono">${formatDuration(c.duration)}</td>
                     <td class="py-3 pr-4 text-xs text-gray-400 whitespace-nowrap">${timeAgo(c.created_at)}</td>
-                    <td class="py-3 text-xs text-gray-500 max-w-xs">${summary}</td>
+                    <td class="py-3 text-xs text-gray-500 min-w-[200px]">${summary}</td>
                 </tr>`;
             }).join('');
         }

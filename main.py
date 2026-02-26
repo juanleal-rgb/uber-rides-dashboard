@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 from fastapi import FastAPI, Depends, Request
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from sqlalchemy import func, text, case
@@ -42,6 +43,7 @@ app = FastAPI(
 )
 
 templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="."), name="static")
 
 
 @app.get("/health")
