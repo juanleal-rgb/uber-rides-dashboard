@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uber Rides — Executive Dashboard</title>
+    <link rel="icon" type="image/png" href="/static/Uber_logo_browser.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'uber-black':    '#000000',
+                        'uber-green':    '#06C167',
+                        'uber-green-dk': '#05A259',
+                        'uber-gray-50':  '#F6F6F6',
+                        'uber-gray-100': '#EEEEEE',
+                        'uber-gray-200': '#E0E0E0',
+                        'uber-gray-400': '#8F8F8F',
+                        'uber-gray-500': '#6B6B6B',
+                        'uber-gray-600': '#545454',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #F6F6F6;
+            color: #000;
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: .4; }
+        }
+        .animate-fade-in { animation: fadeIn .35s ease-out forwards; opacity: 0; }
+        .fade-d1 { animation-delay: .05s; }
+        .fade-d2 { animation-delay: .10s; }
+        .fade-d3 { animation-delay: .15s; }
+        .fade-d4 { animation-delay: .20s; }
+        .fade-d5 { animation-delay: .25s; }
+        .fade-d6 { animation-delay: .30s; }
+        .fade-d7 { animation-delay: .35s; }
+
+        /* KPI Card */
+        .kpi-card {
+            background: #fff;
+            border: 1px solid #EEEEEE;
+            border-radius: 16px;
+            padding: 20px;
+            transition: all .25s ease;
+        }
+        .kpi-card:hover {
+            border-color: #E0E0E0;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+        }
+
+        /* Chart Card */
+        .chart-card {
+            background: #fff;
+            border: 1px solid #EEEEEE;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all .25s ease;
+        }
+        .chart-card:hover {
+            border-color: #E0E0E0;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06);
+        }
+
+        /* Pilot filter */
+        .pilot-btn {
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .2s ease;
+            border: 1px solid #E0E0E0;
+            background: #fff;
+            color: #545454;
+        }
+        .pilot-btn:hover { background: #F6F6F6; }
+        .pilot-btn.active {
+            background: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E0E0E0; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8F8F8F; }
+
+        /* Section title */
+        .section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #8F8F8F;
+        }
+
+        /* AI Summary */
+        .ai-summary {
+            background: linear-gradient(135deg, #000 0%, #1a1a2e 100%);
+            border-radius: 16px;
+            padding: 24px;
+            color: #fff;
+        }
+        .ai-summary h3 {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: #06C167;
+            margin-bottom: 12px;
+        }
+        .ai-bullet { color: rgba(255,255,255,.85); font-size: 14px; line-height: 1.6; }
+        .ai-bullet strong { color: #fff; }
+    </style>
+</head>
+<body>
+
+<!-- ─── HEADER ─────────────────────────────────────────────── -->
+<header class="bg-uber-black sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex items-center justify-between h-16">
+            <!-- Left: logos + title -->
+            <div class="flex items-center gap-4">
+                <img src="/static/Uber_logo_browser.png" alt="Uber" class="h-7 w-auto">
+                <span class="text-white/40 text-sm">x</span>
+                <img src="/static/happyrobot/Footer-logo-white.svg" alt="HappyRobot" class="h-5 w-auto">
+                <div class="h-5 w-px bg-white/20 ml-1"></div>
+                <span class="text-white font-medium text-sm">Executive Dashboard</span>
+            </div>
+
+            <!-- Center: nav back -->
+            <div class="flex items-center gap-3">
+                <a href="/" class="text-white/60 hover:text-white text-xs font-medium transition-colors flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+                    Operational View
+                </a>
+            </div>
+
+            <!-- Right: live + refresh -->
+            <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2 px-3 py-1.5 bg-white/5 rounded-lg">
+                    <span class="relative flex h-2 w-2">
+                        <span class="absolute inline-flex h-full w-full rounded-full bg-uber-green opacity-75" style="animation: pulseDot 2s ease-in-out infinite"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-uber-green"></span>
+                    </span>
+                    <span class="text-xs text-white/70">LIVE</span>
+                    <span id="lastUpdated" class="text-xs text-white/40"></span>
+                </div>
+                <button onclick="loadAnalytics()" id="refreshBtn" class="flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm text-white transition-colors">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ─── MAIN ───────────────────────────────────────────────── -->
+<main class="max-w-7xl mx-auto px-6 py-8">
+
+    <!-- Pilot Filter -->
+    <div class="flex items-center gap-2 mb-8">
+        <span class="section-title mr-2">Market</span>
+        <button class="pilot-btn active" onclick="setCountry('ALL')">Both</button>
+        <button class="pilot-btn" onclick="setCountry('PT')">
+            <span class="mr-1">&#127477;&#127481;</span> Portugal
+        </button>
+        <button class="pilot-btn" onclick="setCountry('ES')">
+            <span class="mr-1">&#127466;&#127480;</span> Spain
+        </button>
+    </div>
+
+    <!-- AI Executive Summary -->
+    <div id="aiSummary" class="ai-summary mb-8 animate-fade-in">
+        <h3><i data-lucide="sparkles" class="w-3.5 h-3.5 inline-block mr-1" style="vertical-align: -2px"></i> AI Executive Summary</h3>
+        <div id="aiContent" class="ai-bullet">Loading insights...</div>
+    </div>
+
+    <!-- KPI Row 1: Core Metrics -->
+    <p class="section-title mb-3">Performance</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="kpi-card animate-fade-in fade-d1" id="kpiTotalCalls">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Total Calls</p>
+                    <p class="text-3xl font-bold mt-2" id="valTotalCalls">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1" id="subTotalCalls"></p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-green-50 text-uber-green">
+                    <i data-lucide="phone" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-card animate-fade-in fade-d2">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Success Rate</p>
+                    <p class="text-3xl font-bold mt-2" id="valSuccessRate">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1" id="subSuccessRate"></p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-green-50 text-uber-green">
+                    <i data-lucide="trending-up" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-card animate-fade-in fade-d3">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Human Handoff</p>
+                    <p class="text-3xl font-bold mt-2" id="valHandoff">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1">Calls requiring human</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-amber-50 text-amber-600">
+                    <i data-lucide="user-check" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-card animate-fade-in fade-d4">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Hours Saved</p>
+                    <p class="text-3xl font-bold mt-2" id="valHoursSaved">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1">Call + 2 min setup time</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-50 text-blue-600">
+                    <i data-lucide="clock" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Row 2: Outreach -->
+    <p class="section-title mb-3">Outreach</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="kpi-card animate-fade-in fade-d5">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Partners Contacted</p>
+                    <p class="text-3xl font-bold mt-2" id="valPartners">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1">Unique phone numbers</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-purple-50 text-purple-600">
+                    <i data-lucide="users" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-card animate-fade-in fade-d6">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Connected Calls</p>
+                    <p class="text-3xl font-bold mt-2" id="valConnected">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1">Excl. voicemail</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-green-50 text-uber-green">
+                    <i data-lucide="phone-call" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-card animate-fade-in fade-d7">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Avg Duration</p>
+                    <p class="text-3xl font-bold mt-2" id="valAvgDuration">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1">Per call</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-cyan-50 text-cyan-600">
+                    <i data-lucide="timer" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 1: Distributions -->
+    <p class="section-title mb-3">Distributions</p>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+        <div class="chart-card animate-fade-in fade-d1">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold">Sentiment Distribution</h3>
+                <span class="text-xs text-uber-gray-400" id="sentimentTotal"></span>
+            </div>
+            <div class="flex items-center justify-center" style="height:260px">
+                <canvas id="chartSentiment"></canvas>
+            </div>
+        </div>
+        <div class="chart-card animate-fade-in fade-d2">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold">Call Outcome Distribution</h3>
+                <span class="text-xs text-uber-gray-400" id="statusTotal"></span>
+            </div>
+            <div class="flex items-center justify-center" style="height:260px">
+                <canvas id="chartStatus"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 2: Patterns -->
+    <p class="section-title mb-3">Patterns</p>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+        <div class="chart-card animate-fade-in fade-d3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold">Connected Calls by Hour</h3>
+                <span class="text-xs text-uber-gray-400" id="hourPeak"></span>
+            </div>
+            <div style="height:240px">
+                <canvas id="chartHour"></canvas>
+            </div>
+        </div>
+        <div class="chart-card animate-fade-in fade-d4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold">Connected Calls by Day</h3>
+                <span class="text-xs text-uber-gray-400" id="dayPeak"></span>
+            </div>
+            <div style="height:240px">
+                <canvas id="chartDay"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row 3: Trend -->
+    <p class="section-title mb-3">Trend</p>
+    <div class="chart-card animate-fade-in fade-d5 mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-sm font-semibold">Call Volume — Last 30 Days</h3>
+        </div>
+        <div style="height:260px">
+            <canvas id="chartTrend"></canvas>
+        </div>
+    </div>
+
+</main>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────── -->
+<footer class="border-t border-uber-gray-100 py-6 mt-4">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <img src="/static/happyrobot/Footer-expand-happyrobot_white.svg" alt="HappyRobot" class="h-5 w-auto opacity-40">
+        </div>
+        <p class="text-xs text-uber-gray-400">Auto-refreshes every 30 s</p>
+    </div>
+</footer>
+
+<!-- ─── SCRIPTS ────────────────────────────────────────────── -->
+<script>
+// ── State ──────────────────────────────────────────────────
+let currentCountry = 'ALL';
+let chartSentiment, chartStatus, chartHour, chartDay, chartTrend;
+
+// ── Country Filter ─────────────────────────────────────────
+function setCountry(c) {
+    currentCountry = c;
+    document.querySelectorAll('.pilot-btn').forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    loadAnalytics();
+}
+
+// ── Helpers ────────────────────────────────────────────────
+function fmtDuration(sec) {
+    if (!sec || sec <= 0) return '0s';
+    const m = Math.floor(sec / 60);
+    const s = Math.round(sec % 60);
+    return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+
+function fmtNumber(n) {
+    if (n == null) return '—';
+    return n.toLocaleString('en-US');
+}
+
+function capitalise(s) {
+    if (!s) return '';
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+const DOW_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+const STATUS_COLORS = {
+    'success':              '#06C167',
+    'hang up':              '#8F8F8F',
+    'avoid callback':       '#FFB800',
+    'failed':               '#E54B4B',
+    'not the right person': '#6366F1',
+    'not interested':       '#E11D48',
+};
+
+const SENTIMENT_COLORS = {
+    'satisfied': '#06C167',
+    'neutral':   '#6366F1',
+    'upset':     '#E54B4B',
+};
+
+// ── Fill sparse data ───────────────────────────────────────
+function fillHours(data) {
+    const map = {};
+    (data || []).forEach(d => map[d.hour] = d.count);
+    return Array.from({length: 24}, (_, i) => map[i] || 0);
+}
+
+function fillDow(data) {
+    const map = {};
+    (data || []).forEach(d => map[d.dow] = d.count);
+    return Array.from({length: 7}, (_, i) => map[i] || 0);
+}
+
+// ── Chart defaults ─────────────────────────────────────────
+Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.color = '#8F8F8F';
+Chart.defaults.plugins.legend.display = false;
+Chart.defaults.animation = false;
+
+// ── Build / update charts ──────────────────────────────────
+function buildDonut(canvasId, labels, values, colors) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return null;
+    return new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors,
+                borderWidth: 2,
+                borderColor: '#fff',
+                hoverOffset: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '62%',
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        padding: 16,
+                        usePointStyle: true,
+                        pointStyleWidth: 8,
+                        font: { size: 11, weight: 500 }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: '#000',
+                    cornerRadius: 8,
+                    padding: 10,
+                    titleFont: { size: 12, weight: 600 },
+                    bodyFont: { size: 11 },
+                    callbacks: {
+                        label: ctx => {
+                            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                            const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
+                            return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function buildBar(canvasId, labels, values, color, opts = {}) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return null;
+
+    const maxVal = Math.max(...values, 1);
+    const barColors = opts.highlightMax
+        ? values.map(v => v === maxVal && v > 0 ? '#06C167' : '#E0E0E0')
+        : Array(values.length).fill(color);
+
+    return new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                backgroundColor: barColors,
+                borderRadius: 6,
+                borderSkipped: false,
+                maxBarThickness: 32,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 10 } }
+                },
+                y: {
+                    grid: { color: '#F6F6F6' },
+                    beginAtZero: true,
+                    ticks: { font: { size: 10 }, precision: 0 }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    backgroundColor: '#000',
+                    cornerRadius: 8,
+                    padding: 10,
+                    titleFont: { size: 12, weight: 600 },
+                    bodyFont: { size: 11 },
+                }
+            }
+        }
+    });
+}
+
+function buildLine(canvasId, labels, values) {
+    const ctx = document.getElementById(canvasId);
+    if (!ctx) return null;
+    return new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                borderColor: '#06C167',
+                borderWidth: 2,
+                backgroundColor: 'rgba(6,193,103,.08)',
+                fill: true,
+                tension: .35,
+                pointRadius: 0,
+                pointHoverRadius: 5,
+                pointHoverBackgroundColor: '#06C167',
+                pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        font: { size: 10 },
+                        maxTicksLimit: 10,
+                    }
+                },
+                y: {
+                    grid: { color: '#F6F6F6' },
+                    beginAtZero: true,
+                    ticks: { font: { size: 10 }, precision: 0 }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    backgroundColor: '#000',
+                    cornerRadius: 8,
+                    padding: 10,
+                    titleFont: { size: 12, weight: 600 },
+                    bodyFont: { size: 11 },
+                }
+            }
+        }
+    });
+}
+
+// ── AI Summary Generator ───────────────────────────────────
+function generateAISummary(data) {
+    const s = data.summary;
+    const sd = data.status_distribution || {};
+    const sent = data.sentiment_distribution || {};
+    const total = s.total_calls || 0;
+    if (total === 0) return 'No data available yet.';
+
+    const successCount = sd['success'] || 0;
+    const successRate = ((successCount / total) * 100).toFixed(1);
+    const satisfiedCount = sent['satisfied'] || 0;
+    const sentimentTotal = Object.values(sent).reduce((a, b) => a + b, 0);
+    const satisfiedRate = sentimentTotal > 0 ? ((satisfiedCount / sentimentTotal) * 100).toFixed(0) : 0;
+
+    // Find peak hour
+    const hours = data.calls_by_hour || [];
+    let peakHour = null;
+    let peakCount = 0;
+    hours.forEach(h => { if (h.count > peakCount) { peakCount = h.count; peakHour = h.hour; } });
+    const peakHourStr = peakHour !== null ? `${peakHour}:00–${peakHour+1}:00` : 'N/A';
+
+    // Find top status
+    const topStatus = Object.entries(sd).sort((a, b) => b[1] - a[1])[0];
+
+    const bullets = [];
+    bullets.push(`The campaign has completed <strong>${fmtNumber(total)} calls</strong> across <strong>${fmtNumber(s.partners_contacted)} partners</strong>, achieving a <strong>${successRate}% success rate</strong>.`);
+    bullets.push(`<strong>${satisfiedRate}%</strong> of conversations ended with a positive sentiment, and <strong>${s.handoff_rate}%</strong> of calls required human intervention.`);
+    bullets.push(`Estimated <strong>${s.total_hours_saved}h saved</strong> in staff time. Peak calling window: <strong>${peakHourStr}</strong>.`);
+    if (topStatus) {
+        bullets.push(`Most common outcome: <strong>${capitalise(topStatus[0])}</strong> (${topStatus[1]} calls).`);
+    }
+
+    return bullets.map(b => `<p class="mb-1">${b}</p>`).join('');
+}
+
+// ── Load Analytics ─────────────────────────────────────────
+async function loadAnalytics() {
+    try {
+        const res = await fetch(`/api/analytics?country=${currentCountry}`);
+        const data = await res.json();
+        const s = data.summary;
+
+        // Update timestamp
+        document.getElementById('lastUpdated').textContent =
+            new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+        // ── KPIs ───────────────────────────────────────────
+        document.getElementById('valTotalCalls').textContent = fmtNumber(s.total_calls);
+        document.getElementById('subTotalCalls').textContent = `${fmtNumber(s.connected_calls)} connected`;
+
+        // Success rate from status_distribution
+        const sd = data.status_distribution || {};
+        const totalCalls = s.total_calls || 1;
+        const successCount = sd['success'] || 0;
+        const successRate = ((successCount / totalCalls) * 100).toFixed(1);
+        document.getElementById('valSuccessRate').textContent = `${successRate}%`;
+        document.getElementById('subSuccessRate').textContent = `${fmtNumber(successCount)} successful`;
+
+        document.getElementById('valHandoff').textContent = `${s.handoff_rate}%`;
+        document.getElementById('valHoursSaved').textContent = `${s.total_hours_saved}h`;
+        document.getElementById('valPartners').textContent = fmtNumber(s.partners_contacted);
+        document.getElementById('valConnected').textContent = fmtNumber(s.connected_calls);
+        document.getElementById('valAvgDuration').textContent = fmtDuration(s.avg_duration);
+
+        // ── AI Summary ─────────────────────────────────────
+        document.getElementById('aiContent').innerHTML = generateAISummary(data);
+
+        // ── Sentiment Donut ────────────────────────────────
+        const sentDist = data.sentiment_distribution || {};
+        const sentLabels = Object.keys(sentDist).map(capitalise);
+        const sentValues = Object.values(sentDist);
+        const sentColors = Object.keys(sentDist).map(k => SENTIMENT_COLORS[k] || '#E0E0E0');
+        const sentTotal = sentValues.reduce((a, b) => a + b, 0);
+        document.getElementById('sentimentTotal').textContent = `${fmtNumber(sentTotal)} calls`;
+
+        if (chartSentiment) chartSentiment.destroy();
+        chartSentiment = buildDonut('chartSentiment', sentLabels, sentValues, sentColors);
+
+        // ── Status Donut ───────────────────────────────────
+        const statLabels = Object.keys(sd).map(capitalise);
+        const statValues = Object.values(sd);
+        const statColors = Object.keys(sd).map(k => STATUS_COLORS[k] || '#E0E0E0');
+        document.getElementById('statusTotal').textContent = `${fmtNumber(totalCalls)} calls`;
+
+        if (chartStatus) chartStatus.destroy();
+        chartStatus = buildDonut('chartStatus', statLabels, statValues, statColors);
+
+        // ── Hours Bar ──────────────────────────────────────
+        const hourValues = fillHours(data.calls_by_hour);
+        const hourLabels = Array.from({length: 24}, (_, i) => `${i}h`);
+        // Find peak
+        const maxHourVal = Math.max(...hourValues);
+        const peakHourIdx = hourValues.indexOf(maxHourVal);
+        document.getElementById('hourPeak').textContent = maxHourVal > 0 ? `Peak: ${peakHourIdx}:00` : '';
+
+        if (chartHour) chartHour.destroy();
+        chartHour = buildBar('chartHour', hourLabels, hourValues, '#06C167', { highlightMax: true });
+
+        // ── Day Bar ────────────────────────────────────────
+        const dowValues = fillDow(data.calls_by_dow);
+        const maxDowVal = Math.max(...dowValues);
+        const peakDowIdx = dowValues.indexOf(maxDowVal);
+        document.getElementById('dayPeak').textContent = maxDowVal > 0 ? `Peak: ${DOW_LABELS[peakDowIdx]}` : '';
+
+        if (chartDay) chartDay.destroy();
+        chartDay = buildBar('chartDay', DOW_LABELS, dowValues, '#06C167', { highlightMax: true });
+
+        // ── Trend Line ─────────────────────────────────────
+        const trendData = data.calls_over_time || [];
+        const trendLabels = trendData.map(d => {
+            const dt = new Date(d.date);
+            return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        });
+        const trendValues = trendData.map(d => d.count);
+
+        if (chartTrend) chartTrend.destroy();
+        chartTrend = buildLine('chartTrend', trendLabels, trendValues);
+
+    } catch (err) {
+        console.error('Failed to load analytics:', err);
+    }
+}
+
+// ── Init ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    lucide.createIcons();
+    loadAnalytics();
+    setInterval(loadAnalytics, 30000);
+});
+</script>
+</body>
+</html>

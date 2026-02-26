@@ -83,6 +83,13 @@ async def dashboard(request: Request, dashboard_auth: str = Cookie(default=None)
     return templates.TemplateResponse("dashboard.html", {"request": request})
 
 
+@app.get("/v2", response_class=HTMLResponse)
+async def dashboard_v2(request: Request, dashboard_auth: str = Cookie(default=None)):
+    if dashboard_auth != AUTH_TOKEN:
+        return RedirectResponse(url="/login", status_code=302)
+    return templates.TemplateResponse("dashboard_v2.html", {"request": request})
+
+
 @app.post("/api/calls", response_model=CallRecordResponse, status_code=201)
 async def receive_call(payload: CallRecordCreate, db: Session = Depends(get_db)):
     record = CallRecord(
