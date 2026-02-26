@@ -133,8 +133,6 @@ async def get_analytics(
     avg_duration      = round(float(s.avg_duration), 1) if s.avg_duration else 0.0
     total_hours_saved = round(float(s.total_seconds_saved or 0) / 3600, 1)
     handoff_rate      = round((human_needed / total_calls * 100) if total_calls > 0 else 0.0, 1)
-    total_attempts    = total_calls  # each record = 1 individual call attempt
-
     # ── 1b: new KPIs ─────────────────────────────────────────────────────────
     partners_contacted = cf(db.query(
         func.count(func.distinct(CallRecord.phone))
@@ -155,13 +153,13 @@ async def get_analytics(
         )).group_by(CallRecord.status).all()
     }
 
-    # ── 3 query: sentiment distribution ──────────────────────────────────────
+    # ── 3 query: sentiment distribution (normalize casing) ──────────────────
     sentiment_dist = {
         row.sentiment: row.count
         for row in cf(db.query(
-            CallRecord.sentiment,
+            func.lower(CallRecord.sentiment).label("sentiment"),
             func.count(CallRecord.id).label("count")
-        )).group_by(CallRecord.sentiment).all()
+        )).group_by(func.lower(CallRecord.sentiment)).all()
     }
 
     # ── 4 query: calls + avg duration per day (combined) ─────────────────────
@@ -234,7 +232,6 @@ async def get_analytics(
             "avg_duration":         avg_duration,
             "handoff_rate":         handoff_rate,
             "total_hours_saved":    total_hours_saved,
-            "total_attempts":       total_attempts,
             "partners_contacted":   partners_contacted,
             "connected_calls":      connected_calls,
         },
