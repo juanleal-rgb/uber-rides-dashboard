@@ -6,13 +6,14 @@ from typing import Optional
 class CallRecordCreate(BaseModel):
     """Validates and coerces the incoming POST payload."""
     phone:      str
-    status:     str           = "neutral"
-    sentiment:  str           = "neutral"
-    call_human: bool          = False
-    summary:    Optional[str] = None
-    attempt:    int           = 1
-    duration:   int           = 0
-    country:    str           = "PT"
+    status:     str                = "neutral"
+    sentiment:  str                = "neutral"
+    call_human: bool               = False
+    summary:    Optional[str]      = None
+    attempt:    int                = 1
+    duration:   int                = 0
+    country:    str                = "PT"
+    created_at: Optional[datetime] = None
 
     @field_validator("call_human", mode="before")
     @classmethod

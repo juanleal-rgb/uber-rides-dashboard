@@ -219,6 +219,44 @@
 
         </div>
 
+        <!-- ===== OUTREACH KPIs ===== -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <div class="card-uber stat-card p-5" style="animation-delay:0.30s; border-left: 3px solid #6366F1;">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Total Call Attempts</span>
+                    <div class="w-8 h-8 rounded-lg bg-neon-purple flex items-center justify-center">
+                        <i data-lucide="phone-outgoing" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+                <p id="card-total-attempts" class="text-3xl font-black text-black">—</p>
+                <p class="text-xs text-gray-400 mt-1">including retries</p>
+            </div>
+
+            <div class="card-uber stat-card p-5" style="animation-delay:0.35s; border-left: 3px solid #0099BB;">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Partners Contacted</span>
+                    <div class="w-8 h-8 rounded-lg bg-neon-blue flex items-center justify-center">
+                        <i data-lucide="users" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+                <p id="card-partners" class="text-3xl font-black text-black">—</p>
+                <p class="text-xs text-gray-400 mt-1">unique partners</p>
+            </div>
+
+            <div class="card-uber stat-card p-5" style="animation-delay:0.40s; border-left: 3px solid #14B8A6;">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Connected Calls</span>
+                    <div class="w-8 h-8 rounded-lg bg-neon-green flex items-center justify-center">
+                        <i data-lucide="phone-incoming" class="w-4 h-4 text-white"></i>
+                    </div>
+                </div>
+                <p id="card-connected" class="text-3xl font-black text-black">—</p>
+                <p class="text-xs text-gray-400 mt-1">excluding voicemail</p>
+            </div>
+
+        </div>
+
         <!-- ===== ROW 1: Status + Sentiment ===== -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -702,6 +740,9 @@
                 document.getElementById('card-avg-attempts').textContent  = d.summary.avg_attempts;
                 document.getElementById('card-avg-duration').textContent  = d.summary.avg_duration;
                 document.getElementById('card-hours-saved').textContent   = d.summary.total_hours_saved + 'h';
+                document.getElementById('card-total-attempts').textContent = (d.summary.total_attempts || 0).toLocaleString();
+                document.getElementById('card-partners').textContent       = (d.summary.partners_contacted || 0).toLocaleString();
+                document.getElementById('card-connected').textContent      = (d.summary.connected_calls || 0).toLocaleString();
                 document.getElementById('handoff-big').textContent        = d.summary.handoff_rate + '%';
                 document.getElementById('handoff-bar').style.width        = Math.min(d.summary.handoff_rate, 100) + '%';
                 updateLastRefreshed();

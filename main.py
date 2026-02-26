@@ -95,6 +95,8 @@ async def receive_call(payload: CallRecordCreate, db: Session = Depends(get_db))
         duration   = payload.duration,
         country    = payload.country,
     )
+    if payload.created_at:
+        record.created_at = payload.created_at
     db.add(record)
     db.commit()
     db.refresh(record)
@@ -123,6 +125,7 @@ async def get_analytics(
         func.avg(CallRecord.attempt).label("avg_attempts"),
         func.avg(CallRecord.duration).label("avg_duration"),
         func.sum(CallRecord.duration + 120).label("total_seconds_saved"),
+        func.sum(CallRecord.attempt).label("total_attempts"),
     )).one()
 
     total_calls       = s.total_calls or 0
@@ -131,6 +134,18 @@ async def get_analytics(
     avg_duration      = round(float(s.avg_duration), 1) if s.avg_duration else 0.0
     total_hours_saved = round(float(s.total_seconds_saved or 0) / 3600, 1)
     handoff_rate      = round((human_needed / total_calls * 100) if total_calls > 0 else 0.0, 1)
+    total_attempts    = int(s.total_attempts or 0)
+
+    # ── 1b: new KPIs ─────────────────────────────────────────────────────────
+    partners_contacted = cf(db.query(
+        func.count(func.distinct(CallRecord.phone))
+    )).scalar() or 0
+
+    connected_calls = cf(db.query(
+        func.count(CallRecord.id)
+    )).filter(
+        CallRecord.status != "voicemail"
+    ).scalar() or 0
 
     # ── 2 query: status distribution ─────────────────────────────────────────
     status_dist = {
@@ -214,12 +229,15 @@ async def get_analytics(
 
     return {
         "summary": {
-            "total_calls":        total_calls,
-            "human_needed":       human_needed,
-            "avg_attempts":       avg_attempts,
-            "avg_duration":       avg_duration,
-            "handoff_rate":       handoff_rate,
-            "total_hours_saved":  total_hours_saved,
+            "total_calls":          total_calls,
+            "human_needed":         human_needed,
+            "avg_attempts":         avg_attempts,
+            "avg_duration":         avg_duration,
+            "handoff_rate":         handoff_rate,
+            "total_hours_saved":    total_hours_saved,
+            "total_attempts":       total_attempts,
+            "partners_contacted":   partners_contacted,
+            "connected_calls":      connected_calls,
         },
         "status_distribution":    status_dist,
         "sentiment_distribution": sentiment_dist,
