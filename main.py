@@ -4,7 +4,7 @@ import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 
-from fastapi import FastAPI, Depends, Request, Form, Cookie
+from fastapi import FastAPI, Depends, Request, Form, Cookie, Query
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -32,6 +32,9 @@ async def lifespan(app: FastAPI):
     with engine.connect() as conn:
         conn.execute(text(
             "ALTER TABLE call_records ADD COLUMN IF NOT EXISTS duration INTEGER NOT NULL DEFAULT 0"
+        ))
+        conn.execute(text(
+            "ALTER TABLE call_records ADD COLUMN IF NOT EXISTS country VARCHAR(2) NOT NULL DEFAULT 'PT'"
         ))
         conn.commit()
     logger.info("Database tables ready.")
@@ -90,6 +93,7 @@ async def receive_call(payload: CallRecordCreate, db: Session = Depends(get_db))
         summary    = payload.summary,
         attempt    = payload.attempt,
         duration   = payload.duration,
+        country    = payload.country,
     )
     db.add(record)
     db.commit()
@@ -102,15 +106,24 @@ async def receive_call(payload: CallRecordCreate, db: Session = Depends(get_db))
 
 
 @app.get("/api/analytics")
-async def get_analytics(db: Session = Depends(get_db)):
+async def get_analytics(
+    db: Session = Depends(get_db),
+    country: str = Query(default="ALL"),
+):
+    # Helper: apply country filter to any query
+    def cf(q):
+        if country in ("PT", "ES"):
+            return q.filter(CallRecord.country == country)
+        return q
+
     # ── 1 query: all summary stats in one pass ────────────────────────────────
-    s = db.query(
+    s = cf(db.query(
         func.count(CallRecord.id).label("total_calls"),
         func.count(case((CallRecord.call_human == True, 1))).label("human_needed"),
         func.avg(CallRecord.attempt).label("avg_attempts"),
         func.avg(CallRecord.duration).label("avg_duration"),
         func.sum(CallRecord.duration + 120).label("total_seconds_saved"),
-    ).one()
+    )).one()
 
     total_calls       = s.total_calls or 0
     human_needed      = s.human_needed or 0
@@ -122,28 +135,28 @@ async def get_analytics(db: Session = Depends(get_db)):
     # ── 2 query: status distribution ─────────────────────────────────────────
     status_dist = {
         row.status: row.count
-        for row in db.query(
+        for row in cf(db.query(
             CallRecord.status,
             func.count(CallRecord.id).label("count")
-        ).group_by(CallRecord.status).all()
+        )).group_by(CallRecord.status).all()
     }
 
     # ── 3 query: sentiment distribution ──────────────────────────────────────
     sentiment_dist = {
         row.sentiment: row.count
-        for row in db.query(
+        for row in cf(db.query(
             CallRecord.sentiment,
             func.count(CallRecord.id).label("count")
-        ).group_by(CallRecord.sentiment).all()
+        )).group_by(CallRecord.sentiment).all()
     }
 
     # ── 4 query: calls + avg duration per day (combined) ─────────────────────
     thirty_days_ago = datetime.utcnow() - timedelta(days=30)
-    time_rows = db.query(
+    time_rows = cf(db.query(
         func.date_trunc("day", CallRecord.created_at).label("day"),
         func.count(CallRecord.id).label("count"),
         func.avg(CallRecord.duration).label("avg_duration"),
-    ).filter(
+    )).filter(
         CallRecord.created_at >= thirty_days_ago
     ).group_by("day").order_by("day").all()
 
@@ -157,11 +170,11 @@ async def get_analytics(db: Session = Depends(get_db)):
     ]
 
     # ── 5 query: contact rate per attempt ─────────────────────────────────────
-    contact_rate_rows = db.query(
+    contact_rate_rows = cf(db.query(
         CallRecord.attempt,
         func.count(CallRecord.id).label("total"),
         func.count(case((CallRecord.status != "failed", 1))).label("connected"),
-    ).group_by(CallRecord.attempt).order_by(CallRecord.attempt).all()
+    )).group_by(CallRecord.attempt).order_by(CallRecord.attempt).all()
     contact_rate_by_attempt = [
         {
             "attempt":   row.attempt,
@@ -173,13 +186,13 @@ async def get_analytics(db: Session = Depends(get_db)):
     ]
 
     # ── 6 query: attempts distribution + recent calls (combined fetch) ────────
-    attempt_rows = db.query(
+    attempt_rows = cf(db.query(
         CallRecord.attempt,
         func.count(CallRecord.id).label("count")
-    ).group_by(CallRecord.attempt).order_by(CallRecord.attempt).all()
+    )).group_by(CallRecord.attempt).order_by(CallRecord.attempt).all()
     attempts_dist = {str(row.attempt): row.count for row in attempt_rows}
 
-    recent = db.query(CallRecord).order_by(
+    recent = cf(db.query(CallRecord)).order_by(
         CallRecord.created_at.desc()
     ).limit(20).all()
     recent_calls = [
@@ -198,19 +211,19 @@ async def get_analytics(db: Session = Depends(get_db)):
     ]
 
     # ── 7 query: connected calls by hour of day ──────────────────────────────
-    hour_rows = db.query(
+    hour_rows = cf(db.query(
         func.extract("hour", CallRecord.created_at).label("hour"),
         func.count(CallRecord.id).label("count"),
-    ).filter(
+    )).filter(
         CallRecord.status != "failed"
     ).group_by("hour").order_by("hour").all()
     calls_by_hour = [{"hour": int(row.hour), "count": row.count} for row in hour_rows]
 
     # ── 8 query: connected calls by day of week ───────────────────────────────
-    dow_rows = db.query(
+    dow_rows = cf(db.query(
         func.extract("dow", CallRecord.created_at).label("dow"),
         func.count(CallRecord.id).label("count"),
-    ).filter(
+    )).filter(
         CallRecord.status != "failed"
     ).group_by("dow").order_by("dow").all()
     calls_by_dow = [{"dow": int(row.dow), "count": row.count} for row in dow_rows]

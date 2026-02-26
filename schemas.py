@@ -12,6 +12,7 @@ class CallRecordCreate(BaseModel):
     summary:    Optional[str] = None
     attempt:    int           = 1
     duration:   int           = 0
+    country:    str           = "PT"
 
     @field_validator("call_human", mode="before")
     @classmethod
@@ -40,6 +41,7 @@ class CallRecordResponse(BaseModel):
     summary:    Optional[str]
     attempt:    int
     duration:   int
+    country:    str
     created_at: datetime
 
     model_config = {"from_attributes": True}

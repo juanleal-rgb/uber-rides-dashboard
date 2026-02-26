@@ -101,6 +101,18 @@
         .header-bar {
             background: #000000;
         }
+        .pilot-btn {
+            background: transparent;
+            color: #6B7280;
+            border: 1.5px solid #E5E5E5;
+            cursor: pointer;
+        }
+        .pilot-btn:hover { border-color: #9CA3AF; color: #111111; }
+        .pilot-active {
+            background: #000000 !important;
+            color: #FFFFFF !important;
+            border-color: #000000 !important;
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -126,6 +138,25 @@
             </div>
         </div>
     </header>
+
+    <!-- ===== PILOT FILTER ===== -->
+    <div class="bg-white border-b border-gray-100 sticky top-[64px] z-40">
+        <div class="max-w-screen-2xl mx-auto px-6 py-3 flex items-center gap-2">
+            <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider mr-1">Pilot</span>
+            <button id="filter-ALL" onclick="setCountry('ALL')"
+                class="pilot-btn pilot-active px-4 py-1.5 rounded-full text-sm font-semibold transition-all">
+                🌍 Both
+            </button>
+            <button id="filter-PT" onclick="setCountry('PT')"
+                class="pilot-btn px-4 py-1.5 rounded-full text-sm font-semibold transition-all">
+                🇵🇹 Portugal
+            </button>
+            <button id="filter-ES" onclick="setCountry('ES')"
+                class="pilot-btn px-4 py-1.5 rounded-full text-sm font-semibold transition-all">
+                🇪🇸 Spain
+            </button>
+        </div>
+    </div>
 
     <main class="max-w-screen-2xl mx-auto px-6 py-8 space-y-8">
 
@@ -715,12 +746,23 @@
                 `Updated ${now.toLocaleTimeString()}`;
         }
 
+        // ── Country filter ────────────────────────────────────────────────────
+        let currentCountry = 'ALL';
+
+        function setCountry(code) {
+            currentCountry = code;
+            ['ALL', 'PT', 'ES'].forEach(c => {
+                document.getElementById('filter-' + c).classList.toggle('pilot-active', c === code);
+            });
+            loadAnalytics();
+        }
+
         // ── Main load function ────────────────────────────────────────────────
         let chartsInitialised = false;
 
         async function loadAnalytics() {
             try {
-                const res = await fetch('/api/analytics');
+                const res = await fetch('/api/analytics?country=' + currentCountry);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const d = await res.json();
 

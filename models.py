@@ -14,6 +14,7 @@ class CallRecord(Base):
     summary    = Column(Text)
     attempt    = Column(Integer,     nullable=False, default=1)
     duration   = Column(Integer,     nullable=False, default=0)
+    country    = Column(String(2),   nullable=False, default="PT", index=True)
     created_at = Column(
         DateTime(timezone=True),
         nullable=False,
