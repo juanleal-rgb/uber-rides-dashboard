@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from sqlalchemy import func, text, case
+from sqlalchemy import func, text, case, and_
 
 from database import engine, get_db, Base
 from models import CallRecord
@@ -231,6 +231,35 @@ async def get_analytics(
     ).group_by("dow").order_by("dow").all()
     calls_by_dow = [{"dow": int(row.dow), "count": row.count} for row in dow_rows]
 
+    # ── 9 query: retry intelligence (partner-level aggregation) ─────────
+    partner_sub = cf(db.query(
+        CallRecord.phone,
+        func.max(CallRecord.attempt).label("max_attempt"),
+        func.max(case((CallRecord.status == "success", 1), else_=0)).label("has_success"),
+        func.min(case((CallRecord.status == "success", CallRecord.attempt))).label("success_at_attempt"),
+    )).group_by(CallRecord.phone).subquery()
+
+    retry_row = db.query(
+        func.count().label("total_partners"),
+        func.coalesce(func.sum(partner_sub.c.has_success), 0).label("converted"),
+        func.avg(partner_sub.c.success_at_attempt).label("avg_to_success"),
+        func.coalesce(func.sum(case(
+            (and_(partner_sub.c.has_success == 0, partner_sub.c.max_attempt >= 10), 1),
+            else_=0
+        )), 0).label("exhausted"),
+        func.coalesce(func.sum(case(
+            (and_(partner_sub.c.has_success == 0, partner_sub.c.max_attempt < 10), 1),
+            else_=0
+        )), 0).label("pending"),
+    ).select_from(partner_sub).one()
+
+    r_total       = int(retry_row.total_partners or 0)
+    r_converted   = int(retry_row.converted or 0)
+    r_avg         = round(float(retry_row.avg_to_success), 1) if retry_row.avg_to_success else 0.0
+    r_exhausted   = int(retry_row.exhausted or 0)
+    r_pending     = int(retry_row.pending or 0)
+    r_conv_rate   = round((r_converted / r_total * 100) if r_total > 0 else 0.0, 1)
+
     return {
         "summary": {
             "total_calls":          total_calls,
@@ -250,4 +279,12 @@ async def get_analytics(
         "recent_calls":           recent_calls,
         "calls_by_hour":          calls_by_hour,
         "calls_by_dow":           calls_by_dow,
+        "retry_intelligence": {
+            "conversion_rate":          r_conv_rate,
+            "avg_attempts_to_success":  r_avg,
+            "exhausted_partners":       r_exhausted,
+            "pending_partners":         r_pending,
+            "converted_partners":       r_converted,
+            "total_partners":           r_total,
+        },
     }
