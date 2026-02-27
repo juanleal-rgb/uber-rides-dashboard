@@ -724,7 +724,7 @@ async function loadAnalytics() {
         const ri = data.retry_intelligence || {};
         document.getElementById('valConvRate').textContent = `${ri.conversion_rate ?? 0}%`;
         document.getElementById('subConvRate').textContent = `${fmtNumber(ri.converted_partners ?? 0)} of ${fmtNumber(ri.total_partners ?? 0)} partners`;
-        document.getElementById('valAvgAttempts').textContent = ri.avg_attempts_to_success ?? '—';
+        document.getElementById('valAvgAttempts').textContent = ri.avg_attempts_to_success || '—';
         document.getElementById('valPending').textContent = fmtNumber(ri.pending_partners ?? 0);
         document.getElementById('valExhausted').textContent = fmtNumber(ri.exhausted_partners ?? 0);
 
