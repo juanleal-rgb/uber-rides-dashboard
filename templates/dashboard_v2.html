@@ -291,6 +291,79 @@
         </div>
     </div>
 
+    <!-- Retry Intelligence -->
+    <p class="section-title mb-3">Retry Intelligence</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        <div class="kpi-card animate-fade-in fade-d1">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Conversion Rate</p>
+                    <p class="text-3xl font-bold mt-2" id="valConvRate">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1" id="subConvRate">Partners reaching success</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-green-50 text-uber-green">
+                    <i data-lucide="target" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-card animate-fade-in fade-d2">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Avg Attempts to Convert</p>
+                    <p class="text-3xl font-bold mt-2" id="valAvgAttempts">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1">Calls until success</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-blue-50 text-blue-600">
+                    <i data-lucide="repeat" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-card animate-fade-in fade-d3">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Pending Retries</p>
+                    <p class="text-3xl font-bold mt-2" id="valPending">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1">Partners still in loop</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-amber-50 text-amber-600">
+                    <i data-lucide="loader" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+        <div class="kpi-card animate-fade-in fade-d4">
+            <div class="flex items-start justify-between">
+                <div>
+                    <p class="text-xs font-medium text-uber-gray-500 uppercase tracking-wide">Exhausted</p>
+                    <p class="text-3xl font-bold mt-2" id="valExhausted">—</p>
+                    <p class="text-xs text-uber-gray-400 mt-1">Max attempts reached</p>
+                </div>
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center bg-red-50 text-red-500">
+                    <i data-lucide="x-circle" class="w-5 h-5"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
+        <div class="chart-card animate-fade-in fade-d5">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold">Attempts Distribution</h3>
+                <span class="text-xs text-uber-gray-400" id="attemptsTotal"></span>
+            </div>
+            <div style="height:240px">
+                <canvas id="chartAttempts"></canvas>
+            </div>
+        </div>
+        <div class="chart-card animate-fade-in fade-d6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-sm font-semibold">Retry Funnel</h3>
+                <span class="text-xs text-uber-gray-400">Partners per stage</span>
+            </div>
+            <div style="height:240px">
+                <canvas id="chartFunnel"></canvas>
+            </div>
+        </div>
+    </div>
+
     <!-- Charts Row 1: Distributions -->
     <p class="section-title mb-3">Distributions</p>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
@@ -364,7 +437,7 @@
 <script>
 // ── State ──────────────────────────────────────────────────
 let currentCountry = 'ALL';
-let chartSentiment, chartStatus, chartHour, chartDay, chartTrend;
+let chartSentiment, chartStatus, chartHour, chartDay, chartTrend, chartAttempts, chartFunnel;
 
 // ── Country Filter ─────────────────────────────────────────
 function setCountry(c) {
@@ -610,6 +683,11 @@ function generateAISummary(data) {
         bullets.push(`Most common outcome: <strong>${capitalise(topStatus[0])}</strong> (${topStatus[1]} calls).`);
     }
 
+    const ri = data.retry_intelligence;
+    if (ri && ri.total_partners > 0) {
+        bullets.push(`Retry engine: <strong>${ri.conversion_rate}%</strong> conversion rate across <strong>${fmtNumber(ri.total_partners)}</strong> partners (avg <strong>${ri.avg_attempts_to_success}</strong> attempts to convert). <strong>${fmtNumber(ri.pending_partners)}</strong> pending, <strong>${fmtNumber(ri.exhausted_partners)}</strong> exhausted.`);
+    }
+
     return bullets.map(b => `<p class="mb-1">${b}</p>`).join('');
 }
 
@@ -641,6 +719,60 @@ async function loadAnalytics() {
         document.getElementById('valPartners').textContent = fmtNumber(s.partners_contacted);
         document.getElementById('valConnected').textContent = fmtNumber(s.connected_calls);
         document.getElementById('valAvgDuration').textContent = fmtDuration(s.avg_duration);
+
+        // ── Retry Intelligence KPIs ───────────────────────
+        const ri = data.retry_intelligence || {};
+        document.getElementById('valConvRate').textContent = `${ri.conversion_rate ?? 0}%`;
+        document.getElementById('subConvRate').textContent = `${fmtNumber(ri.converted_partners ?? 0)} of ${fmtNumber(ri.total_partners ?? 0)} partners`;
+        document.getElementById('valAvgAttempts').textContent = ri.avg_attempts_to_success ?? '—';
+        document.getElementById('valPending').textContent = fmtNumber(ri.pending_partners ?? 0);
+        document.getElementById('valExhausted').textContent = fmtNumber(ri.exhausted_partners ?? 0);
+
+        // ── Attempts Distribution Bar ────────────────────
+        const attDist = data.attempts_distribution || {};
+        const attKeys = Object.keys(attDist).sort((a, b) => parseInt(a) - parseInt(b));
+        const attLabels = attKeys.map(k => `#${k}`);
+        const attValues = attKeys.map(k => attDist[k]);
+        const attTotal = attValues.reduce((a, b) => a + b, 0);
+        document.getElementById('attemptsTotal').textContent = `${fmtNumber(attTotal)} calls`;
+
+        if (chartAttempts) chartAttempts.destroy();
+        chartAttempts = buildBar('chartAttempts', attLabels, attValues, '#06C167', { highlightMax: true });
+
+        // ── Retry Funnel (horizontal bar) ────────────────
+        const funnelLabels = ['Converted', 'Pending', 'Exhausted'];
+        const funnelValues = [ri.converted_partners ?? 0, ri.pending_partners ?? 0, ri.exhausted_partners ?? 0];
+        const funnelColors = ['#06C167', '#F59E0B', '#E54B4B'];
+
+        if (chartFunnel) chartFunnel.destroy();
+        const funnelCtx = document.getElementById('chartFunnel');
+        if (funnelCtx) {
+            chartFunnel = new Chart(funnelCtx, {
+                type: 'bar',
+                data: {
+                    labels: funnelLabels,
+                    datasets: [{
+                        data: funnelValues,
+                        backgroundColor: funnelColors,
+                        borderRadius: 6,
+                        borderSkipped: false,
+                        maxBarThickness: 48,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: '#F6F6F6' }, beginAtZero: true, ticks: { font: { size: 10 }, precision: 0 } },
+                        y: { grid: { display: false }, ticks: { font: { size: 11, weight: 500 } } }
+                    },
+                    plugins: {
+                        tooltip: { backgroundColor: '#000', cornerRadius: 8, padding: 10, titleFont: { size: 12, weight: 600 }, bodyFont: { size: 11 } }
+                    }
+                }
+            });
+        }
 
         // ── AI Summary ─────────────────────────────────────
         document.getElementById('aiContent').innerHTML = generateAISummary(data);
