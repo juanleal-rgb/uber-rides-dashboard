@@ -20,7 +20,7 @@ class CallRecordCreate(BaseModel):
     def parse_call_human(cls, v) -> bool:
         if isinstance(v, bool):
             return v
-        return str(v).strip().upper() == "TRUE"
+        return "true" in str(v).strip().lower()
 
     @field_validator("attempt", "duration", mode="before")
     @classmethod

@@ -626,7 +626,7 @@
             }
             tbody.innerHTML = calls.map(c => {
                 const statusBadge   = badgeClass(c.status);
-                const humanBadge    = c.call_human ? '<span class="badge-yes px-2.5 py-1 rounded-full text-xs font-semibold">Yes</span>' : '<span class="badge-no px-2.5 py-1 rounded-full text-xs font-semibold">No</span>';
+                const humanBadge    = String(c.call_human).toLowerCase().includes('true') ? '<span class="badge-yes px-2.5 py-1 rounded-full text-xs font-semibold">Yes</span>' : '<span class="badge-no px-2.5 py-1 rounded-full text-xs font-semibold">No</span>';
                 const sentimentCls  = sentimentClass(c.sentiment);
                 const fullSummary   = c.summary || '—';
                 const shortSummary  = fullSummary.length > 70 ? fullSummary.slice(0, 70) + '…' : fullSummary;
