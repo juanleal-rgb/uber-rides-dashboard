@@ -22,7 +22,7 @@ from collections import defaultdict
 from datetime import datetime
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
-API_URL   = "https://uber-rides-dashboard-production.up.railway.app/api/calls"
+API_URL   = "https://ur-demo-dashboard-production.up.railway.app//api/calls"
 DELAY     = 0.15  # seconds between requests
 # ─────────────────────────────────────────────────────────────────────────────
 

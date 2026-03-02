@@ -24,7 +24,7 @@ import time
 import requests
 
 # ── CONFIG ────────────────────────────────────────────────────────────────────
-API_URL   = "https://uber-rides-dashboard-production.up.railway.app/api/calls"   # ← update this
+API_URL   = "https://ur-demo-dashboard-production.up.railway.app//api/calls"   # ← update this
 JSON_FILE = "analysis.json"                             # ← path to your file
 DELAY_BETWEEN_REQUESTS = 0.2  # seconds, to be polite to the server
 # ─────────────────────────────────────────────────────────────────────────────
