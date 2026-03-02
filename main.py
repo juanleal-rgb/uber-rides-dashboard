@@ -152,12 +152,15 @@ async def get_analytics(
     ).scalar() or 0
 
     # ── 2 query: status distribution ─────────────────────────────────────────
+    status_excluded = ["voicemail", "hang up"]
     status_dist = {
         row.status: row.count
         for row in cf(db.query(
             CallRecord.status,
             func.count(CallRecord.id).label("count")
-        )).group_by(CallRecord.status).all()
+        )).filter(
+            CallRecord.status.notin_(status_excluded)
+        ).group_by(CallRecord.status).all()
     }
 
     # ── 3 query: sentiment distribution (normalize casing) ──────────────────
@@ -166,7 +169,9 @@ async def get_analytics(
         for row in cf(db.query(
             func.lower(CallRecord.sentiment).label("sentiment"),
             func.count(CallRecord.id).label("count")
-        )).group_by(func.lower(CallRecord.sentiment)).all()
+        )).filter(
+            CallRecord.status != "voicemail"
+        ).group_by(func.lower(CallRecord.sentiment)).all()
     }
 
     # ── 4 query: calls + avg duration per day (combined) ─────────────────────
@@ -192,7 +197,9 @@ async def get_analytics(
     attempt_rows = cf(db.query(
         CallRecord.attempt,
         func.count(CallRecord.id).label("count")
-    )).group_by(CallRecord.attempt).order_by(CallRecord.attempt).all()
+    )).filter(
+        CallRecord.status != "voicemail"
+    ).group_by(CallRecord.attempt).order_by(CallRecord.attempt).all()
     attempts_dist = {str(row.attempt): row.count for row in attempt_rows}
 
     recent = cf(db.query(CallRecord)).order_by(
