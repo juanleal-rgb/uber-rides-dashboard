@@ -148,7 +148,7 @@ async def get_analytics(
     connected_calls = cf(db.query(
         func.count(CallRecord.id)
     )).filter(
-        CallRecord.status != "voicemail"
+        CallRecord.status.notin_(["voicemail", "hang up"])
     ).scalar() or 0
 
     # ── 2 query: status distribution ─────────────────────────────────────────
@@ -181,7 +181,8 @@ async def get_analytics(
         func.count(CallRecord.id).label("count"),
         func.avg(CallRecord.duration).label("avg_duration"),
     )).filter(
-        CallRecord.created_at >= thirty_days_ago
+        CallRecord.created_at >= thirty_days_ago,
+        CallRecord.status.notin_(["voicemail", "hang up"])
     ).group_by("day").order_by("day").all()
 
     calls_over_time = [
@@ -225,7 +226,7 @@ async def get_analytics(
         func.extract("hour", CallRecord.created_at).label("hour"),
         func.count(CallRecord.id).label("count"),
     )).filter(
-        CallRecord.status.notin_(["failed", "voicemail"])
+        CallRecord.status.notin_(["failed", "voicemail", "hang up"])
     ).group_by("hour").order_by("hour").all()
     calls_by_hour = [{"hour": int(row.hour), "count": row.count} for row in hour_rows]
 
@@ -234,7 +235,7 @@ async def get_analytics(
         func.extract("dow", CallRecord.created_at).label("dow"),
         func.count(CallRecord.id).label("count"),
     )).filter(
-        CallRecord.status.notin_(["failed", "voicemail"])
+        CallRecord.status.notin_(["failed", "voicemail", "hang up"])
     ).group_by("dow").order_by("dow").all()
     calls_by_dow = [{"dow": int(row.dow), "count": row.count} for row in dow_rows]
 

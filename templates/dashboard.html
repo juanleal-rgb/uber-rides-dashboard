@@ -773,12 +773,19 @@
                         durationTimeChart.update('none');
 
                         const hFilled = fillHours(d.calls_by_hour);
+                        const hTotal  = hFilled.reduce((s, r) => s + r.count, 0);
+                        document.getElementById('hour-total').textContent = hTotal.toLocaleString() + ' connected';
+                        const hTop3   = [...hFilled].sort((a, b) => b.count - a.count).slice(0, 3).filter(r => r.count > 0);
+                        document.getElementById('hour-peak').textContent =
+                            hTop3.length ? 'Peak hours: ' + hTop3.map(r => `${r.hour}:00 (${r.count})`).join(', ') : '';
                         hourChart.data.datasets[0].data = hFilled.map(r => r.count);
                         hourChart.data.datasets[0].backgroundColor = hFilled.map(r => r.count > 0 ? '#6366F1' : '#E5E7EB');
                         hourChart.update('none');
 
                         const dFilled = fillDow(d.calls_by_dow);
                         const dPeak   = dFilled.reduce((a, b) => a.count >= b.count ? a : b, { count: 0 });
+                        document.getElementById('dow-peak-label').textContent =
+                            dPeak.count > 0 ? `${dPeak.day} (${dPeak.count})` : '—';
                         dowChart.data.datasets[0].data = dFilled.map(r => r.count);
                         dowChart.data.datasets[0].backgroundColor = dFilled.map(r => r.day === dPeak.day && r.count > 0 ? '#F59E0B' : '#FEF3C7');
                         dowChart.update('none');
