@@ -10,6 +10,7 @@ class CallRecordCreate(BaseModel):
     sentiment:  str                = "neutral"
     call_human: bool               = False
     summary:    Optional[str]      = None
+    call_url:   Optional[str]      = None
     attempt:    int                = 1
     duration:   int                = 0
     country:    str                = "PT"
@@ -40,6 +41,7 @@ class CallRecordResponse(BaseModel):
     sentiment:  str
     call_human: bool
     summary:    Optional[str]
+    call_url:   Optional[str]
     attempt:    int
     duration:   int
     country:    str

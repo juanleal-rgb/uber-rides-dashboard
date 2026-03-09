@@ -12,6 +12,7 @@ class CallRecord(Base):
     sentiment  = Column(String(50),  nullable=False, default="neutral", index=True)
     call_human = Column(Boolean,     nullable=False, default=False)
     summary    = Column(Text)
+    call_url   = Column(Text)
     attempt    = Column(Integer,     nullable=False, default=1)
     duration   = Column(Integer,     nullable=False, default=0)
     country    = Column(String(2),   nullable=False, default="PT", index=True)

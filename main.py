@@ -36,6 +36,9 @@ async def lifespan(app: FastAPI):
         conn.execute(text(
             "ALTER TABLE call_records ADD COLUMN IF NOT EXISTS country VARCHAR(2) NOT NULL DEFAULT 'PT'"
         ))
+        conn.execute(text(
+            "ALTER TABLE call_records ADD COLUMN IF NOT EXISTS call_url TEXT"
+        ))
         conn.commit()
     logger.info("Database tables ready.")
     yield
@@ -98,6 +101,7 @@ async def receive_call(payload: CallRecordCreate, db: Session = Depends(get_db))
         sentiment  = payload.sentiment,
         call_human = payload.call_human,
         summary    = payload.summary,
+        call_url   = payload.call_url,
         attempt    = payload.attempt,
         duration   = payload.duration,
         country    = payload.country,
@@ -112,6 +116,72 @@ async def receive_call(payload: CallRecordCreate, db: Session = Depends(get_db))
         f"| status={record.status} | attempt={record.attempt}"
     )
     return record
+
+
+def _assign_category(status: str) -> str:
+    return {
+        "success":              "success",
+        "callback requested":   "callback",
+        "not interested":       "not_interested",
+        "avoid callback":       "avoid",
+        "not the right person": "wrong_contact",
+        "wrong flow":           "wrong_flow",
+        "hang up":              "hung_up",
+        "voicemail":            "voicemail",
+        "failed":               "failed",
+    }.get((status or "").lower(), "hung_up")
+
+
+@app.get("/api/monitor")
+async def get_monitor(
+    db: Session = Depends(get_db),
+    country: str = Query(default="ALL"),
+):
+    def cf(q):
+        if country in ("PT", "ES"):
+            return q.filter(CallRecord.country == country)
+        return q
+
+    rows = cf(db.query(CallRecord)).order_by(
+        CallRecord.phone,
+        CallRecord.created_at.desc(),
+    ).all()
+
+    partners: dict = {}
+    for r in rows:
+        if r.phone not in partners:
+            partners[r.phone] = {
+                "phone":          r.phone,
+                "country":        r.country,
+                "total_calls":    0,
+                "last_status":    r.status,
+                "last_sentiment": r.sentiment,
+                "last_contact":   r.created_at.isoformat(),
+                "last_duration":  r.duration,
+                "last_summary":   r.summary or "",
+                "last_call_human": r.call_human,
+                "category":       _assign_category(r.status),
+                "calls":          [],
+            }
+        partners[r.phone]["total_calls"] += 1
+        partners[r.phone]["calls"].append({
+            "id":         r.id,
+            "status":     r.status,
+            "sentiment":  r.sentiment,
+            "call_human": r.call_human,
+            "attempt":    r.attempt,
+            "duration":   r.duration,
+            "summary":    r.summary or "",
+            "call_url":   r.call_url or "",
+            "created_at": r.created_at.isoformat(),
+        })
+
+    sorted_partners = sorted(
+        partners.values(),
+        key=lambda p: p["last_contact"],
+        reverse=True,
+    )
+    return {"partners": sorted_partners}
 
 
 @app.get("/api/analytics")

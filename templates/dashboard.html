@@ -103,6 +103,17 @@
         .header-bar {
             background: #000000;
         }
+        .tab-btn-active {
+            background: #FFFFFF;
+            color: #000000;
+        }
+        .cat-chip-active {
+            background: #000000 !important;
+            color: #FFFFFF !important;
+            border-color: #000000 !important;
+        }
+        .cat-chip { background: transparent; cursor: pointer; }
+        .cat-chip:hover { opacity: 0.8; }
         .pilot-btn {
             background: transparent;
             color: #6B7280;
@@ -128,12 +139,23 @@
                 <span class="text-white font-semibold text-lg tracking-tight">Call Analytics</span>
             </div>
             <div class="flex items-center gap-4">
+                <!-- Tab switcher -->
+                <div class="flex items-center bg-gray-800 rounded-lg p-1 gap-1">
+                    <button id="tab-btn-analyze" onclick="setTab('analyze')"
+                        class="tab-btn-active px-4 py-1.5 rounded-md text-sm font-semibold transition-all">
+                        Analyze
+                    </button>
+                    <button id="tab-btn-monitor" onclick="setTab('monitor')"
+                        class="px-4 py-1.5 rounded-md text-sm font-semibold text-gray-400 hover:text-white transition-all">
+                        Monitor
+                    </button>
+                </div>
                 <div class="flex items-center gap-2 text-gray-400 text-sm">
                     <div class="live-dot"></div>
                     <span>Live</span>
                 </div>
                 <span id="last-updated" class="text-gray-400 text-sm">—</span>
-                <button onclick="loadAnalytics()" class="flex items-center gap-1.5 bg-white text-black text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                <button onclick="refreshAll()" class="flex items-center gap-1.5 bg-white text-black text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
                     <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                     Refresh
                 </button>
@@ -160,6 +182,8 @@
         </div>
     </div>
 
+    <!-- ===== ANALYZE TAB ===== -->
+    <div id="tab-analyze">
     <main class="max-w-screen-2xl mx-auto px-6 py-8 space-y-8">
 
         <!-- ===== SUMMARY CARDS ===== -->
@@ -359,6 +383,89 @@
         </div>
 
     </main>
+    </div><!-- /tab-analyze -->
+
+    <!-- ===== MONITOR TAB ===== -->
+    <div id="tab-monitor" class="hidden max-w-screen-2xl mx-auto px-6 py-8 space-y-6">
+
+        <!-- Category filter chips -->
+        <div class="flex flex-wrap items-center gap-2">
+            <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider mr-1">Filter</span>
+            <button id="cat-all" onclick="setMonitorCategory('all')"
+                class="cat-chip cat-chip-active px-3 py-1.5 rounded-full text-xs font-semibold border transition-all">
+                All
+            </button>
+            <button id="cat-success" onclick="setMonitorCategory('success')"
+                class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#14B8A6;border-color:#14B8A6;">
+                Success
+            </button>
+            <button id="cat-callback" onclick="setMonitorCategory('callback')"
+                class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#3B82F6;border-color:#3B82F6;">
+                Callback
+            </button>
+            <button id="cat-not_interested" onclick="setMonitorCategory('not_interested')"
+                class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#B30050;border-color:#B30050;">
+                Not Interested
+            </button>
+            <button id="cat-avoid" onclick="setMonitorCategory('avoid')"
+                class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#F59E0B;border-color:#F59E0B;">
+                Avoid
+            </button>
+            <button id="cat-wrong_contact" onclick="setMonitorCategory('wrong_contact')"
+                class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#6366F1;border-color:#6366F1;">
+                Wrong Contact
+            </button>
+            <button id="cat-wrong_flow" onclick="setMonitorCategory('wrong_flow')"
+                class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#8B5CF6;border-color:#8B5CF6;">
+                Wrong Flow
+            </button>
+            <button id="cat-hung_up" onclick="setMonitorCategory('hung_up')"
+                class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#6B7280;border-color:#6B7280;">
+                Hung Up
+            </button>
+            <button id="cat-voicemail" onclick="setMonitorCategory('voicemail')"
+                class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#94A3B8;border-color:#94A3B8;">
+                Voicemail
+            </button>
+        </div>
+
+        <!-- Search bar -->
+        <div class="flex items-center gap-3">
+            <div class="relative flex-1 max-w-sm">
+                <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                <input id="monitor-search" type="text" placeholder="Search by phone…"
+                    oninput="setMonitorSearch(this.value)"
+                    class="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:border-black transition-colors">
+            </div>
+            <span id="monitor-count" class="text-xs text-gray-400"></span>
+        </div>
+
+        <!-- Partners table -->
+        <div class="card-uber p-0 overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b-2 border-gray-100 text-xs font-semibold text-gray-500 uppercase tracking-wide bg-gray-50">
+                            <th class="text-left px-5 py-3">Phone</th>
+                            <th class="text-left px-3 py-3">Country</th>
+                            <th class="text-left px-3 py-3">Status</th>
+                            <th class="text-left px-3 py-3">Sentiment</th>
+                            <th class="text-center px-3 py-3">Calls</th>
+                            <th class="text-left px-3 py-3">Last Contact</th>
+                            <th class="text-left px-3 py-3">Duration</th>
+                            <th class="px-3 py-3"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="monitor-table-body">
+                        <tr>
+                            <td colspan="8" class="py-10 text-center text-gray-400">Loading…</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /tab-monitor -->
 
     <script>
         // ── Chart.js global defaults ──────────────────────────────────────────
@@ -715,6 +822,7 @@
                 document.getElementById('filter-' + c).classList.toggle('pilot-active', c === code);
             });
             loadAnalytics();
+            if (activeTab === 'monitor') loadMonitor();
         }
 
         // ── Main load function ────────────────────────────────────────────────
@@ -800,11 +908,203 @@
             }
         }
 
+        // ── Tab switching ─────────────────────────────────────────────────────
+        let activeTab = 'analyze';
+
+        function setTab(tab) {
+            activeTab = tab;
+            document.getElementById('tab-analyze').classList.toggle('hidden', tab !== 'analyze');
+            document.getElementById('tab-monitor').classList.toggle('hidden', tab !== 'monitor');
+            document.getElementById('tab-btn-analyze').className =
+                tab === 'analyze'
+                    ? 'tab-btn-active px-4 py-1.5 rounded-md text-sm font-semibold transition-all'
+                    : 'px-4 py-1.5 rounded-md text-sm font-semibold text-gray-400 hover:text-white transition-all';
+            document.getElementById('tab-btn-monitor').className =
+                tab === 'monitor'
+                    ? 'tab-btn-active px-4 py-1.5 rounded-md text-sm font-semibold transition-all'
+                    : 'px-4 py-1.5 rounded-md text-sm font-semibold text-gray-400 hover:text-white transition-all';
+            if (tab === 'monitor') loadMonitor();
+        }
+
+        function refreshAll() {
+            loadAnalytics();
+            if (activeTab === 'monitor') loadMonitor();
+        }
+
+        // ── Monitor state ─────────────────────────────────────────────────────
+        let monitorData       = [];
+        let monitorCategory   = 'all';
+        let monitorSearch     = '';
+        let expandedPhones    = new Set();
+
+        const CATEGORY_CONFIG = {
+            'success':        { label: 'Success',        color: '#14B8A6', bg: '#F0FDFA' },
+            'callback':       { label: 'Callback',       color: '#3B82F6', bg: '#EFF6FF' },
+            'not_interested': { label: 'Not Interested', color: '#B30050', bg: '#FDF2F8' },
+            'avoid':          { label: 'Avoid',          color: '#F59E0B', bg: '#FFFBEB' },
+            'wrong_contact':  { label: 'Wrong Contact',  color: '#6366F1', bg: '#EEF2FF' },
+            'wrong_flow':     { label: 'Wrong Flow',     color: '#8B5CF6', bg: '#F5F3FF' },
+            'hung_up':        { label: 'Hung Up',        color: '#6B7280', bg: '#F5F5F5' },
+            'voicemail':      { label: 'Voicemail',      color: '#94A3B8', bg: '#F8FAFC' },
+            'failed':         { label: 'Failed',         color: '#EF4444', bg: '#FEF2F2' },
+        };
+
+        function categoryBadge(cat) {
+            const cfg = CATEGORY_CONFIG[cat] || { label: capitalise(cat), color: '#6B7280', bg: '#F5F5F5' };
+            return `<span style="background:${cfg.bg};color:${cfg.color}" class="px-2.5 py-1 rounded-full text-xs font-semibold">${cfg.label}</span>`;
+        }
+
+        function setMonitorCategory(cat) {
+            monitorCategory = cat;
+            document.querySelectorAll('.cat-chip').forEach(btn => {
+                const isCat = btn.id === 'cat-' + cat;
+                btn.classList.toggle('cat-chip-active', isCat);
+                if (isCat) {
+                    btn.style.background = '#000000';
+                    btn.style.color      = '#FFFFFF';
+                    btn.style.borderColor= '#000000';
+                } else {
+                    btn.style.background = '';
+                    // restore original colour via inline style was set on HTML; just remove bg
+                }
+            });
+            renderMonitorTable();
+        }
+
+        function setMonitorSearch(val) {
+            monitorSearch = val.toLowerCase().trim();
+            renderMonitorTable();
+        }
+
+        async function loadMonitor() {
+            try {
+                const res = await fetch('/api/monitor?country=' + currentCountry);
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const d = await res.json();
+                monitorData = d.partners;
+                renderMonitorTable();
+            } catch (err) {
+                console.error('Monitor load error:', err);
+            }
+        }
+
+        function renderMonitorTable() {
+            const tbody = document.getElementById('monitor-table-body');
+            let filtered = monitorData;
+            if (monitorCategory !== 'all') {
+                filtered = filtered.filter(p => p.category === monitorCategory);
+            }
+            if (monitorSearch) {
+                filtered = filtered.filter(p => p.phone.toLowerCase().includes(monitorSearch));
+            }
+
+            const countEl = document.getElementById('monitor-count');
+            countEl.textContent = filtered.length + ' partner' + (filtered.length !== 1 ? 's' : '');
+
+            if (!filtered.length) {
+                tbody.innerHTML = '<tr><td colspan="8" class="py-10 text-center text-gray-400">No partners found.</td></tr>';
+                return;
+            }
+
+            const rows = [];
+            filtered.forEach(p => {
+                const isExpanded = expandedPhones.has(p.phone);
+                const flagMap = { 'PT': '🇵🇹', 'ES': '🇪🇸' };
+                const flag = flagMap[p.country] || p.country;
+                const chevron = isExpanded ? '▼' : '▶';
+                const safePh = p.phone.replace(/"/g, '&quot;');
+
+                rows.push(`<tr class="table-row" id="mrow-${CSS.escape(p.phone)}">
+                    <td class="py-3 px-5 font-mono text-xs font-semibold">${p.phone}</td>
+                    <td class="py-3 px-3 text-sm">${flag}</td>
+                    <td class="py-3 px-3">${categoryBadge(p.category)}</td>
+                    <td class="py-3 px-3 text-xs ${sentimentClass(p.last_sentiment)}">${capitalise(p.last_sentiment)}</td>
+                    <td class="py-3 px-3 text-xs text-center font-semibold">${p.total_calls}</td>
+                    <td class="py-3 px-3 text-xs text-gray-400 whitespace-nowrap">${timeAgo(p.last_contact)}</td>
+                    <td class="py-3 px-3 text-xs font-mono">${formatDuration(p.last_duration)}</td>
+                    <td class="py-3 px-3">
+                        <button onclick="togglePartnerRow('${safePh}')"
+                            class="text-gray-400 hover:text-black transition-colors text-xs px-2 py-1 rounded hover:bg-gray-100">
+                            ${chevron}
+                        </button>
+                    </td>
+                </tr>`);
+
+                if (isExpanded) {
+                    const callRows = p.calls.map(c => {
+                        const full  = c.summary || '—';
+                        const short = full.length > 60 ? full.slice(0, 60) + '…' : full;
+                        const summHtml = full.length > 60
+                            ? `<span class="cursor-pointer text-gray-400 hover:text-gray-600"
+                                   data-full="${full.replace(/"/g,'&quot;')}"
+                                   data-short="${short.replace(/"/g,'&quot;')}"
+                                   data-expanded="false"
+                                   onclick="toggleSummary(this)">${short}</span>`
+                            : `<span class="text-gray-400">${full}</span>`;
+                        const hBadge = c.call_human
+                            ? '<span class="badge-yes px-2 py-0.5 rounded-full text-xs font-semibold">Yes</span>'
+                            : '<span class="badge-no px-2 py-0.5 rounded-full text-xs font-semibold">No</span>';
+                        const viewBtn = c.call_url
+                            ? `<a href="${c.call_url}" target="_blank" rel="noopener noreferrer"
+                                class="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-black border border-gray-200 hover:border-black px-2 py-0.5 rounded transition-colors whitespace-nowrap">
+                                <i data-lucide="external-link" class="w-3 h-3"></i> View
+                               </a>`
+                            : '';
+                        return `<tr class="bg-gray-50 border-b border-gray-100 text-xs">
+                            <td class="py-2 pl-10 pr-3 text-gray-400 whitespace-nowrap">${timeAgo(c.created_at)}</td>
+                            <td class="py-2 px-3"><span class="${badgeClass(c.status)} px-2 py-0.5 rounded-full text-xs font-semibold">${capitalise(c.status)}</span></td>
+                            <td class="py-2 px-3 ${sentimentClass(c.sentiment)}">${capitalise(c.sentiment)}</td>
+                            <td class="py-2 px-3">${hBadge}</td>
+                            <td class="py-2 px-3 text-center font-semibold">${c.attempt}</td>
+                            <td class="py-2 px-3 font-mono">${formatDuration(c.duration)}</td>
+                            <td class="py-2 px-3 max-w-xs">${summHtml}</td>
+                            <td class="py-2 px-3">${viewBtn}</td>
+                        </tr>`;
+                    }).join('');
+
+                    rows.push(`<tr class="expand-row">
+                        <td colspan="8" class="p-0">
+                            <table class="w-full text-xs border-b-2 border-gray-200">
+                                <thead>
+                                    <tr class="bg-gray-100 text-gray-500 uppercase tracking-wide">
+                                        <th class="text-left py-2 pl-10 pr-3">Time</th>
+                                        <th class="text-left py-2 px-3">Status</th>
+                                        <th class="text-left py-2 px-3">Sentiment</th>
+                                        <th class="text-left py-2 px-3">Human</th>
+                                        <th class="text-center py-2 px-3">Attempt</th>
+                                        <th class="text-left py-2 px-3">Duration</th>
+                                        <th class="text-left py-2 px-3">Summary</th>
+                                        <th class="py-2 px-3"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>${callRows}</tbody>
+                            </table>
+                        </td>
+                    </tr>`);
+                }
+            });
+
+            tbody.innerHTML = rows.join('');
+            lucide.createIcons();
+        }
+
+        function togglePartnerRow(phone) {
+            if (expandedPhones.has(phone)) {
+                expandedPhones.delete(phone);
+            } else {
+                expandedPhones.add(phone);
+            }
+            renderMonitorTable();
+        }
+
         // ── Boot ──────────────────────────────────────────────────────────────
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             loadAnalytics();
-            setInterval(loadAnalytics, 30000);
+            setInterval(() => {
+                loadAnalytics();
+                if (activeTab === 'monitor') loadMonitor();
+            }, 30000);
         });
     </script>
 </body>
