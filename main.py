@@ -129,6 +129,7 @@ def _assign_category(status: str) -> str:
         "hang up":              "hung_up",
         "voicemail":            "voicemail",
         "failed":               "failed",
+        "already complete":     "already_complete",
     }.get((status or "").lower(), "hung_up")
 
 

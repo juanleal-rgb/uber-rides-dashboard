@@ -72,6 +72,7 @@
         .badge-not-interested       { background: #FDF2F8; color: #B30050; }
         .badge-callback-requested   { background: #EFF6FF; color: #3B82F6; }
         .badge-voicemail            { background: #F5F5F5; color: #A3A3A3; }
+        .badge-already-complete     { background: #ECFEFF; color: #06B6D4; }
         .badge-default              { background: #F3F3F3; color: #555555; }
 
         /* Human badge */
@@ -427,6 +428,10 @@
                 class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#94A3B8;border-color:#94A3B8;">
                 Voicemail
             </button>
+            <button id="cat-already_complete" onclick="setMonitorCategory('already_complete')"
+                class="cat-chip px-3 py-1.5 rounded-full text-xs font-semibold border transition-all" style="color:#06B6D4;border-color:#06B6D4;">
+                Already Complete
+            </button>
         </div>
 
         <!-- Search bar -->
@@ -486,6 +491,7 @@
             'hang up':              '#6B7280',
             'voicemail':            '#94A3B8',
             'failed':               '#EF4444',
+            'already complete':     '#06B6D4',
         };
 
         // One colour per sentiment
@@ -777,6 +783,7 @@
                 'not interested':       'badge-not-interested',
                 'callback requested':   'badge-callback-requested',
                 'voicemail':            'badge-voicemail',
+                'already complete':     'badge-already-complete',
             };
             return map[(status || '').toLowerCase()] || 'badge-default';
         }
@@ -945,8 +952,9 @@
             'wrong_contact':  { label: 'Wrong Contact',  color: '#6366F1', bg: '#EEF2FF' },
             'wrong_flow':     { label: 'Wrong Flow',     color: '#8B5CF6', bg: '#F5F3FF' },
             'hung_up':        { label: 'Hung Up',        color: '#6B7280', bg: '#F5F5F5' },
-            'voicemail':      { label: 'Voicemail',      color: '#94A3B8', bg: '#F8FAFC' },
-            'failed':         { label: 'Failed',         color: '#EF4444', bg: '#FEF2F2' },
+            'voicemail':        { label: 'Voicemail',        color: '#94A3B8', bg: '#F8FAFC' },
+            'failed':           { label: 'Failed',           color: '#EF4444', bg: '#FEF2F2' },
+            'already_complete': { label: 'Already Complete', color: '#06B6D4', bg: '#ECFEFF' },
         };
 
         function categoryBadge(cat) {
