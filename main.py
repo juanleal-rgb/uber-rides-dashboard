@@ -21,7 +21,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", "uber_x_happyrobot_2026")
+DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD")
+if not DASHBOARD_PASSWORD:
+    raise RuntimeError("DASHBOARD_PASSWORD env var not set")
 AUTH_TOKEN = hashlib.sha256(DASHBOARD_PASSWORD.encode()).hexdigest()
 
 
