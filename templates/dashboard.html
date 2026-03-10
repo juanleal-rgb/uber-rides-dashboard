@@ -555,11 +555,71 @@
         }
 
         // ── Status chart ──────────────────────────────────────────────────────
+        const RESOLVED_STATUSES = ['success', 'already complete', 'wrong flow', 'not the right person'];
+
+        function mergeStatusDist(dist) {
+            const resolvedBreakdown = {};
+            const otherDist = {};
+            let resolvedTotal = 0;
+            for (const [k, v] of Object.entries(dist)) {
+                if (RESOLVED_STATUSES.includes(k.toLowerCase())) {
+                    resolvedBreakdown[k] = v;
+                    resolvedTotal += v;
+                } else {
+                    otherDist[k] = v;
+                }
+            }
+            const merged = {};
+            if (resolvedTotal > 0) merged['Resolved'] = resolvedTotal;
+            for (const [k, v] of Object.entries(otherDist)) merged[capitalise(k)] = v;
+            return { merged, resolvedBreakdown };
+        }
+
+        function buildStatusTooltipCallback(resolvedBreakdown) {
+            return (ctx) => {
+                const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                const pct   = Math.round(ctx.parsed / total * 100);
+                if (ctx.label === 'Resolved') {
+                    return [
+                        ` Resolved: ${ctx.parsed} (${pct}%)`,
+                        ...Object.entries(resolvedBreakdown).map(([k, v]) => `   · ${capitalise(k)}: ${v}`)
+                    ];
+                }
+                return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+            };
+        }
+
         function initStatusChart(dist) {
-            const labels = Object.keys(dist).map(k => capitalise(k));
-            const data   = Object.values(dist);
-            const colors = Object.keys(dist).map(k => STATUS_COLORS[k.toLowerCase()] || '#888888');
-            statusChart = buildDonut('statusChart', labels, data, colors);
+            const { merged, resolvedBreakdown } = mergeStatusDist(dist);
+            const labels = Object.keys(merged);
+            const data   = Object.values(merged);
+            const colors = labels.map(l => l === 'Resolved' ? '#14B8A6' : (STATUS_COLORS[l.toLowerCase()] || '#888888'));
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            statusChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 0, hoverOffset: 6 }] },
+                options: {
+                    cutout: '68%',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, boxHeight: 10 } },
+                        tooltip: { callbacks: { label: buildStatusTooltipCallback(resolvedBreakdown) } }
+                    }
+                }
+            });
+        }
+
+        function updateStatusChart(dist) {
+            const { merged, resolvedBreakdown } = mergeStatusDist(dist);
+            const labels = Object.keys(merged);
+            const data   = Object.values(merged);
+            const colors = labels.map(l => l === 'Resolved' ? '#14B8A6' : (STATUS_COLORS[l.toLowerCase()] || '#888888'));
+            statusChart.data.labels = labels;
+            statusChart.data.datasets[0].data = data;
+            statusChart.data.datasets[0].backgroundColor = colors;
+            statusChart.options.plugins.tooltip.callbacks.label = buildStatusTooltipCallback(resolvedBreakdown);
+            statusChart.update('none');
         }
 
         // ── Sentiment chart ───────────────────────────────────────────────────
@@ -865,10 +925,7 @@
                         initDowChart(d.calls_by_dow);
                         chartsInitialised = true;
                     } else {
-                        updateDonut(statusChart,
-                            Object.keys(d.status_distribution).map(capitalise),
-                            Object.values(d.status_distribution),
-                            Object.keys(d.status_distribution).map(k => STATUS_COLORS[k.toLowerCase()] || '#888888'));
+                        updateStatusChart(d.status_distribution);
                         updateDonut(sentimentChart,
                             Object.keys(d.sentiment_distribution).map(capitalise),
                             Object.values(d.sentiment_distribution),
@@ -966,14 +1023,17 @@
             monitorCategory = cat;
             document.querySelectorAll('.cat-chip').forEach(btn => {
                 const isCat = btn.id === 'cat-' + cat;
+                const catId = btn.id.replace('cat-', '');
+                const cfg   = CATEGORY_CONFIG[catId];
                 btn.classList.toggle('cat-chip-active', isCat);
                 if (isCat) {
-                    btn.style.background = '#000000';
-                    btn.style.color      = '#FFFFFF';
-                    btn.style.borderColor= '#000000';
+                    btn.style.background  = '#000000';
+                    btn.style.color       = '#FFFFFF';
+                    btn.style.borderColor = '#000000';
                 } else {
-                    btn.style.background = '';
-                    // restore original colour via inline style was set on HTML; just remove bg
+                    btn.style.background  = '';
+                    btn.style.color       = cfg ? cfg.color : '';
+                    btn.style.borderColor = cfg ? cfg.color : '';
                 }
             });
             renderMonitorTable();
