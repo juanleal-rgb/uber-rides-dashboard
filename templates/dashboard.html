@@ -1082,7 +1082,7 @@
                 const chevron = isExpanded ? '▼' : '▶';
                 const safePh = p.phone.replace(/"/g, '&quot;');
 
-                rows.push(`<tr class="table-row" id="mrow-${CSS.escape(p.phone)}">
+                rows.push(`<tr class="table-row cursor-pointer select-none" id="mrow-${CSS.escape(p.phone)}" onclick="togglePartnerRow('${safePh}')">
                     <td class="py-3 px-5 font-mono text-xs font-semibold">${p.phone}</td>
                     <td class="py-3 px-3 text-sm">${flag}</td>
                     <td class="py-3 px-3">${categoryBadge(p.category)}</td>
@@ -1090,12 +1090,7 @@
                     <td class="py-3 px-3 text-xs text-center font-semibold">${p.total_calls}</td>
                     <td class="py-3 px-3 text-xs text-gray-400 whitespace-nowrap">${timeAgo(p.last_contact)}</td>
                     <td class="py-3 px-3 text-xs font-mono">${formatDuration(p.last_duration)}</td>
-                    <td class="py-3 px-3">
-                        <button onclick="togglePartnerRow('${safePh}')"
-                            class="text-gray-400 hover:text-black transition-colors text-xs px-2 py-1 rounded hover:bg-gray-100">
-                            ${chevron}
-                        </button>
-                    </td>
+                    <td class="py-3 px-3 text-gray-400 text-xs">${chevron}</td>
                 </tr>`);
 
                 if (isExpanded) {
