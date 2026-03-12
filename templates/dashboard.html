@@ -156,6 +156,27 @@
                     <span>Live</span>
                 </div>
                 <span id="last-updated" class="text-gray-400 text-sm">—</span>
+                <div class="relative" id="batchWrapper">
+                    {% if is_admin %}
+                    <button onclick="launchBatch()" id="launchBatchBtn" class="flex items-center gap-1.5 bg-[#00B35E] hover:bg-[#009950] text-black text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+                        <i data-lucide="phone-outgoing" class="w-3.5 h-3.5"></i>
+                        Launch Batch
+                    </button>
+                    <div id="batchDropdown" class="hidden absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50 min-w-[160px]">
+                        <button onclick="launchBatchFor('PT')" class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                            🇵🇹 Portugal
+                        </button>
+                        <button onclick="launchBatchFor('ES')" class="w-full flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-400 hover:bg-gray-50 transition-colors cursor-not-allowed">
+                            🇪🇸 Spain <span class="ml-auto text-xs text-gray-300">soon</span>
+                        </button>
+                    </div>
+                    {% else %}
+                    <button disabled title="Solo admins pueden lanzar batches" class="flex items-center gap-1.5 bg-[#00B35E]/60 text-black/60 text-sm font-semibold px-4 py-2 rounded-lg cursor-not-allowed">
+                        <i data-lucide="phone-outgoing" class="w-3.5 h-3.5"></i>
+                        Launch Batch
+                    </button>
+                    {% endif %}
+                </div>
                 <button onclick="refreshAll()" class="flex items-center gap-1.5 bg-white text-black text-sm font-semibold px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
                     <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                     Refresh
@@ -993,6 +1014,47 @@
         function refreshAll() {
             loadAnalytics();
             if (activeTab === 'monitor') loadMonitor();
+        }
+
+        function launchBatch() {
+            if (currentCountry === 'ALL') {
+                const dd = document.getElementById('batchDropdown');
+                dd.classList.toggle('hidden');
+                setTimeout(() => document.addEventListener('click', closeBatchDropdown, { once: true }), 0);
+            } else {
+                launchBatchFor(currentCountry);
+            }
+        }
+
+        function closeBatchDropdown(e) {
+            const dd = document.getElementById('batchDropdown');
+            if (!dd.contains(e.target)) dd.classList.add('hidden');
+        }
+
+        async function launchBatchFor(country) {
+            document.getElementById('batchDropdown').classList.add('hidden');
+            const btn = document.getElementById('launchBatchBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-3.5 h-3.5 animate-spin"></i> Launching...';
+            lucide.createIcons();
+            try {
+                const res = await fetch('/api/launch-batch', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ country })
+                });
+                btn.innerHTML = res.ok
+                    ? '<i data-lucide="check" class="w-3.5 h-3.5"></i> Launched!'
+                    : '<i data-lucide="x" class="w-3.5 h-3.5"></i> Error';
+            } catch (e) {
+                btn.innerHTML = '<i data-lucide="x" class="w-3.5 h-3.5"></i> Error';
+            }
+            lucide.createIcons();
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="phone-outgoing" class="w-3.5 h-3.5"></i> Launch Batch';
+                lucide.createIcons();
+            }, 3000);
         }
 
         // ── Monitor state ─────────────────────────────────────────────────────

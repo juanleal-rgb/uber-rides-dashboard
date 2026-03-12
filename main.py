@@ -4,7 +4,9 @@ import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 
+import httpx
 from fastapi import FastAPI, Depends, Request, Form, Cookie, Query
+from fastapi.responses import JSONResponse
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -25,6 +27,11 @@ DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD")
 if not DASHBOARD_PASSWORD:
     raise RuntimeError("DASHBOARD_PASSWORD env var not set")
 AUTH_TOKEN = hashlib.sha256(DASHBOARD_PASSWORD.encode()).hexdigest()
+
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+if not ADMIN_PASSWORD:
+    raise RuntimeError("ADMIN_PASSWORD env var not set")
+ADMIN_TOKEN = hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest()
 
 
 @asynccontextmanager
@@ -70,6 +77,10 @@ async def login_page(request: Request):
 
 @app.post("/login")
 async def login_post(request: Request, password: str = Form(...)):
+    if password == ADMIN_PASSWORD:
+        response = RedirectResponse(url="/", status_code=302)
+        response.set_cookie(key="dashboard_auth", value=ADMIN_TOKEN, httponly=True, samesite="lax")
+        return response
     if password == DASHBOARD_PASSWORD:
         response = RedirectResponse(url="/", status_code=302)
         response.set_cookie(key="dashboard_auth", value=AUTH_TOKEN, httponly=True, samesite="lax")
@@ -83,16 +94,34 @@ async def login_post(request: Request, password: str = Form(...)):
 
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request, dashboard_auth: str = Cookie(default=None)):
-    if dashboard_auth != AUTH_TOKEN:
+    if dashboard_auth not in (AUTH_TOKEN, ADMIN_TOKEN):
         return RedirectResponse(url="/login", status_code=302)
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    is_admin = dashboard_auth == ADMIN_TOKEN
+    return templates.TemplateResponse("dashboard.html", {"request": request, "is_admin": is_admin})
 
 
-@app.get("/v2", response_class=HTMLResponse)
-async def dashboard_v2(request: Request, dashboard_auth: str = Cookie(default=None)):
-    if dashboard_auth != AUTH_TOKEN:
-        return RedirectResponse(url="/login", status_code=302)
-    return templates.TemplateResponse("dashboard_v2.html", {"request": request})
+
+BATCH_URLS = {
+    "PT": "https://workflows.platform.happyrobot.ai/hooks/7s25ex11glf5",
+    "ES": None,
+}
+
+@app.post("/api/launch-batch")
+async def launch_batch(request: Request, dashboard_auth: str = Cookie(default=None)):
+    if dashboard_auth != ADMIN_TOKEN:
+        return JSONResponse({"error": "No autorizado."}, status_code=403)
+
+    body = await request.json()
+    country = body.get("country", "")
+
+    url = BATCH_URLS.get(country)
+    if not url:
+        return JSONResponse({"error": f"No hay webhook configurado para {country}."}, status_code=400)
+
+    async with httpx.AsyncClient() as client:
+        await client.post(url)
+
+    return JSONResponse({"ok": True})
 
 
 @app.post("/api/calls", response_model=CallRecordResponse, status_code=201)
