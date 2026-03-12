@@ -78,11 +78,11 @@ async def login_page(request: Request):
 @app.post("/login")
 async def login_post(request: Request, password: str = Form(...)):
     if password == ADMIN_PASSWORD:
-        response = RedirectResponse(url="/", status_code=302)
+        response = RedirectResponse(url="/", status_code=303)
         response.set_cookie(key="dashboard_auth", value=ADMIN_TOKEN, httponly=True, samesite="lax")
         return response
     if password == DASHBOARD_PASSWORD:
-        response = RedirectResponse(url="/", status_code=302)
+        response = RedirectResponse(url="/", status_code=303)
         response.set_cookie(key="dashboard_auth", value=AUTH_TOKEN, httponly=True, samesite="lax")
         return response
     return templates.TemplateResponse(
@@ -95,7 +95,7 @@ async def login_post(request: Request, password: str = Form(...)):
 @app.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request, dashboard_auth: str = Cookie(default=None)):
     if dashboard_auth not in (AUTH_TOKEN, ADMIN_TOKEN):
-        return RedirectResponse(url="/login", status_code=302)
+        return RedirectResponse(url="/login", status_code=303)
     is_admin = dashboard_auth == ADMIN_TOKEN
     return templates.TemplateResponse("dashboard.html", {"request": request, "is_admin": is_admin})
 
