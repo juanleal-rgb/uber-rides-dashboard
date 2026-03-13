@@ -127,6 +127,18 @@
             color: #FFFFFF !important;
             border-color: #000000 !important;
         }
+        .sub-chip {
+            background: transparent;
+            color: #6B7280;
+            border-color: #E5E5E5;
+            cursor: pointer;
+        }
+        .sub-chip:hover { border-color: #9CA3AF; color: #111111; }
+        .sub-chip-active {
+            background: #F3F4F6 !important;
+            color: #111111 !important;
+            border-color: #9CA3AF !important;
+        }
     </style>
 </head>
 <body class="min-h-screen">
@@ -208,6 +220,22 @@
                 class="pilot-btn px-4 py-1.5 rounded-full text-sm font-semibold transition-all">
                 🇪🇸 Spain 2
             </button>
+            <!-- Sub-filter: only visible in ALL mode -->
+            <div id="allSubFilter" class="ml-auto flex items-center gap-2">
+                <span class="text-xs text-gray-400 mr-1">Include:</span>
+                <button id="sub-PT" onclick="toggleSubCountry('PT')"
+                    class="sub-chip sub-chip-active px-3 py-1 rounded-full text-xs font-semibold border transition-all">
+                    🇵🇹 Portugal
+                </button>
+                <button id="sub-ES" onclick="toggleSubCountry('ES')"
+                    class="sub-chip sub-chip-active px-3 py-1 rounded-full text-xs font-semibold border transition-all">
+                    🇪🇸 Spain
+                </button>
+                <button id="sub-ES2" onclick="toggleSubCountry('ES2')"
+                    class="sub-chip sub-chip-active px-3 py-1 rounded-full text-xs font-semibold border transition-all">
+                    🇪🇸 Spain 2
+                </button>
+            </div>
         </div>
     </div>
 
@@ -910,14 +938,33 @@
 
         // ── Country filter ────────────────────────────────────────────────────
         let currentCountry = 'ALL';
+        let allSubset = new Set(['PT', 'ES', 'ES2']);
 
         function setCountry(code) {
             currentCountry = code;
             ['ALL', 'PT', 'ES', 'ES2'].forEach(c => {
                 document.getElementById('filter-' + c).classList.toggle('pilot-active', c === code);
             });
+            document.getElementById('allSubFilter').style.display = code === 'ALL' ? 'flex' : 'none';
             loadAnalytics();
             if (activeTab === 'monitor') loadMonitor();
+        }
+
+        function toggleSubCountry(code) {
+            if (allSubset.has(code)) {
+                if (allSubset.size === 1) return; // keep at least one
+                allSubset.delete(code);
+            } else {
+                allSubset.add(code);
+            }
+            document.getElementById('sub-' + code).classList.toggle('sub-chip-active', allSubset.has(code));
+            loadAnalytics();
+            if (activeTab === 'monitor') loadMonitor();
+        }
+
+        function getCountryParam() {
+            if (currentCountry !== 'ALL') return currentCountry;
+            return [...allSubset].join(',');
         }
 
         // ── Main load function ────────────────────────────────────────────────
@@ -925,7 +972,7 @@
 
         async function loadAnalytics() {
             try {
-                const res = await fetch('/api/analytics?country=' + currentCountry);
+                const res = await fetch('/api/analytics?country=' + getCountryParam());
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const d = await res.json();
 
@@ -1115,7 +1162,7 @@
 
         async function loadMonitor() {
             try {
-                const res = await fetch('/api/monitor?country=' + currentCountry);
+                const res = await fetch('/api/monitor?country=' + getCountryParam());
                 if (!res.ok) throw new Error('HTTP ' + res.status);
                 const d = await res.json();
                 monitorData = d.partners;

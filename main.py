@@ -174,8 +174,10 @@ async def get_monitor(
     country: str = Query(default="ALL"),
 ):
     def cf(q):
-        if country in ("PT", "ES", "ES2"):
-            return q.filter(CallRecord.country == country)
+        if country != "ALL":
+            selected = [c.strip() for c in country.split(",") if c.strip()]
+            if selected:
+                return q.filter(CallRecord.country.in_(selected))
         return q
 
     rows = cf(db.query(CallRecord)).order_by(
@@ -227,8 +229,10 @@ async def get_analytics(
 ):
     # Helper: apply country filter to any query
     def cf(q):
-        if country in ("PT", "ES", "ES2"):
-            return q.filter(CallRecord.country == country)
+        if country != "ALL":
+            selected = [c.strip() for c in country.split(",") if c.strip()]
+            if selected:
+                return q.filter(CallRecord.country.in_(selected))
         return q
 
     # ── 1 query: all summary stats in one pass ────────────────────────────────
