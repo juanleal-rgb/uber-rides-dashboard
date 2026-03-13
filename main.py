@@ -43,7 +43,10 @@ async def lifespan(app: FastAPI):
             "ALTER TABLE call_records ADD COLUMN IF NOT EXISTS duration INTEGER NOT NULL DEFAULT 0"
         ))
         conn.execute(text(
-            "ALTER TABLE call_records ADD COLUMN IF NOT EXISTS country VARCHAR(2) NOT NULL DEFAULT 'PT'"
+            "ALTER TABLE call_records ADD COLUMN IF NOT EXISTS country VARCHAR(10) NOT NULL DEFAULT 'PT'"
+        ))
+        conn.execute(text(
+            "ALTER TABLE call_records ALTER COLUMN country TYPE VARCHAR(10)"
         ))
         conn.execute(text(
             "ALTER TABLE call_records ADD COLUMN IF NOT EXISTS call_url TEXT"
@@ -102,8 +105,9 @@ async def dashboard(request: Request, dashboard_auth: str = Cookie(default=None)
 
 
 BATCH_URLS = {
-    "PT": "https://workflows.platform.happyrobot.ai/hooks/7s25ex11glf5",
-    "ES": None,
+    "PT":  "https://workflows.platform.happyrobot.ai/hooks/7s25ex11glf5",
+    "ES":  None,
+    "ES2": "https://workflows.platform.happyrobot.ai/hooks/pdfsa96ul697",
 }
 
 @app.post("/api/launch-batch")
@@ -170,7 +174,7 @@ async def get_monitor(
     country: str = Query(default="ALL"),
 ):
     def cf(q):
-        if country in ("PT", "ES"):
+        if country in ("PT", "ES", "ES2"):
             return q.filter(CallRecord.country == country)
         return q
 
@@ -223,7 +227,7 @@ async def get_analytics(
 ):
     # Helper: apply country filter to any query
     def cf(q):
-        if country in ("PT", "ES"):
+        if country in ("PT", "ES", "ES2"):
             return q.filter(CallRecord.country == country)
         return q
 
